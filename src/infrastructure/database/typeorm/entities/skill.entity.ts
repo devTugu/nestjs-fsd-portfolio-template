@@ -1,0 +1,43 @@
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+@Entity({ name: 'skills' })
+export class SkillEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ length: 100 })
+  name: string;
+
+  @Column({ length: 50 })
+  category: string;
+
+  @Column({ type: 'tinyint', default: 3 })
+  proficiency: number;
+
+  @Column({ length: 100, nullable: true })
+  icon: string | null;
+
+  @Index('IDX_skills_published_sort')
+  @Column({ name: 'is_published', default: true })
+  isPublished: boolean;
+
+  @Column({ name: 'sort_order', default: 0 })
+  sortOrder: number;
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+  deletedAt?: Date | null;
+}
