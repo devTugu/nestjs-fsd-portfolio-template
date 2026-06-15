@@ -40,24 +40,28 @@ export class SkillAdminV1Controller {
 
   @Post()
   @Permissions('SKILL_CREATE')
+  @ApiOperation({ summary: 'Create skill' })
   create(@Body() dto: CreateSkillDto) {
     return this.createSkill.execute(dto);
   }
 
   @Get()
   @Permissions('SKILL_READ')
+  @ApiOperation({ summary: 'List skills' })
   findAll(@Query() query: ListSkillsQueryDto) {
     return this.listSkills.execute(query);
   }
 
   @Get(':id')
   @Permissions('SKILL_READ')
+  @ApiOperation({ summary: 'Get skill by id' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.getSkill.execute(id);
   }
 
   @Patch(':id')
   @Permissions('SKILL_UPDATE')
+  @ApiOperation({ summary: 'Update skill' })
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateSkillDto) {
     return this.updateSkill.execute(id, dto);
   }
@@ -65,6 +69,7 @@ export class SkillAdminV1Controller {
   @Delete(':id')
   @Permissions('SKILL_DELETE')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete skill' })
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.deleteSkill.execute(id);
   }

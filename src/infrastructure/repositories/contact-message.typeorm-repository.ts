@@ -15,9 +15,7 @@ import { ContactMessageEntity } from '../database/typeorm/entities/contact-messa
 import { ContactMessageMapper } from '../database/typeorm/mappers/contact-message.mapper';
 
 @Injectable()
-export class ContactMessageTypeOrmRepository
-  implements IContactMessageRepository
-{
+export class ContactMessageTypeOrmRepository implements IContactMessageRepository {
   constructor(
     @InjectRepository(ContactMessageEntity)
     private readonly repository: Repository<ContactMessageEntity>,

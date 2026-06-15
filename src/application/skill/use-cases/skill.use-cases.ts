@@ -22,7 +22,9 @@ export class CreateSkillUseCase {
       throw AppErrors.BAD_REQUEST('Proficiency must be between 1 and 5.');
     }
     if (await this.skills.nameCategoryExists(input.name, input.category)) {
-      throw AppErrors.CONFLICT('Skill with this name and category already exists.');
+      throw AppErrors.CONFLICT(
+        'Skill with this name and category already exists.',
+      );
     }
     const skill = await this.skills.create(input);
     return toSkillOutput(skill);
@@ -60,7 +62,9 @@ export class UpdateSkillUseCase {
       (name !== existing.name || category !== existing.category) &&
       (await this.skills.nameCategoryExists(name, category, id))
     ) {
-      throw AppErrors.CONFLICT('Skill with this name and category already exists.');
+      throw AppErrors.CONFLICT(
+        'Skill with this name and category already exists.',
+      );
     }
     const skill = await this.skills.update(id, input);
     return toSkillOutput(skill);

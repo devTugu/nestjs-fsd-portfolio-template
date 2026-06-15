@@ -3,10 +3,7 @@ import { IProjectRepository } from '@domain/project/repositories/project.reposit
 import { AppErrors } from '@application/exceptions/application.exception';
 import { ProjectOutput, toProjectOutput } from '../dto/project-output.mapper';
 import { PROJECT_REPOSITORY } from '@shared/constants/tokens';
-import {
-  generateSlug,
-  generateUniqueSlug,
-} from '@shared/utils/generate-slug';
+import { generateSlug, generateUniqueSlug } from '@shared/utils/generate-slug';
 
 @Injectable()
 export class UpdateProjectUseCase {
@@ -35,7 +32,9 @@ export class UpdateProjectUseCase {
     const existing = await this.projects.findById(id);
     if (!existing) throw AppErrors.NOT_FOUND('Project not found.');
 
-    const updateData: Parameters<IProjectRepository['update']>[1] = { ...input };
+    const updateData: Parameters<IProjectRepository['update']>[1] = {
+      ...input,
+    };
 
     if (input.slug !== undefined) {
       if (await this.projects.slugExists(input.slug, id)) {

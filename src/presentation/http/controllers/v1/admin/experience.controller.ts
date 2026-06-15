@@ -40,24 +40,28 @@ export class ExperienceAdminV1Controller {
 
   @Post()
   @Permissions('EXPERIENCE_CREATE')
+  @ApiOperation({ summary: 'Create experience' })
   create(@Body() dto: CreateExperienceDto) {
     return this.createExperience.execute(dto);
   }
 
   @Get()
   @Permissions('EXPERIENCE_READ')
+  @ApiOperation({ summary: 'List experiences' })
   findAll(@Query() query: ListExperiencesQueryDto) {
     return this.listExperiences.execute(query);
   }
 
   @Get(':id')
   @Permissions('EXPERIENCE_READ')
+  @ApiOperation({ summary: 'Get experience by id' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.getExperience.execute(id);
   }
 
   @Patch(':id')
   @Permissions('EXPERIENCE_UPDATE')
+  @ApiOperation({ summary: 'Update experience' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateExperienceDto,
@@ -68,6 +72,7 @@ export class ExperienceAdminV1Controller {
   @Delete(':id')
   @Permissions('EXPERIENCE_DELETE')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete experience' })
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.deleteExperience.execute(id);
   }

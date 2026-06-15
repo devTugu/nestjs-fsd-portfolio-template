@@ -50,9 +50,9 @@ describe('Site settings use cases', () => {
       ...settings,
       hero: { ...settings.hero, title: 'Updated' },
     });
-    const result = await new UpdateSiteSettingsUseCase(
-      repo as never,
-    ).execute({ hero: { title: 'Updated' } });
+    const result = await new UpdateSiteSettingsUseCase(repo as never).execute({
+      hero: { title: 'Updated' },
+    });
     expect(result.hero.title).toBe('Updated');
   });
 });

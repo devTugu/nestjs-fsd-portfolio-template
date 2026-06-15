@@ -13,7 +13,12 @@ import {
   ExperienceEntity,
   SiteSettingEntity,
 } from '../typeorm/entities';
-import { PERMISSION_CODES, SUPER_ADMIN_ROLE_NAME, CONTENT_MANAGER_ROLE_NAME, PORTFOLIO_PERMISSION_CODES } from './permissions.const';
+import {
+  PERMISSION_CODES,
+  SUPER_ADMIN_ROLE_NAME,
+  CONTENT_MANAGER_ROLE_NAME,
+  PORTFOLIO_PERMISSION_CODES,
+} from './permissions.const';
 import {
   DEMO_EXPERIENCES,
   DEMO_PROJECTS,
@@ -32,7 +37,18 @@ const dataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [Role, Permission, User, UserRole, RolePermission, RefreshToken, ProjectEntity, SkillEntity, ExperienceEntity, SiteSettingEntity],
+  entities: [
+    Role,
+    Permission,
+    User,
+    UserRole,
+    RolePermission,
+    RefreshToken,
+    ProjectEntity,
+    SkillEntity,
+    ExperienceEntity,
+    SiteSettingEntity,
+  ],
   synchronize: false,
   connectTimeout: 15000,
   ...(useSsl && { ssl: { rejectUnauthorized: true } }),

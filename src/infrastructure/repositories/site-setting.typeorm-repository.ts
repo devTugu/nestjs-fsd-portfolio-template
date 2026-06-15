@@ -37,9 +37,18 @@ export class SiteSettingTypeOrmRepository implements ISiteSettingRepository {
       entity = this.repository.create({
         id: SINGLETON_ID,
         hero: { ...DEFAULT_SITE_SETTINGS.hero },
-        header: { ...DEFAULT_SITE_SETTINGS.header, navLinks: [...DEFAULT_SITE_SETTINGS.header.navLinks] },
-        footer: { ...DEFAULT_SITE_SETTINGS.footer, socialLinks: [...DEFAULT_SITE_SETTINGS.footer.socialLinks] },
-        seo: { ...DEFAULT_SITE_SETTINGS.seo, keywords: [...DEFAULT_SITE_SETTINGS.seo.keywords] },
+        header: {
+          ...DEFAULT_SITE_SETTINGS.header,
+          navLinks: [...DEFAULT_SITE_SETTINGS.header.navLinks],
+        },
+        footer: {
+          ...DEFAULT_SITE_SETTINGS.footer,
+          socialLinks: [...DEFAULT_SITE_SETTINGS.footer.socialLinks],
+        },
+        seo: {
+          ...DEFAULT_SITE_SETTINGS.seo,
+          keywords: [...DEFAULT_SITE_SETTINGS.seo.keywords],
+        },
         contactInfo: { ...DEFAULT_SITE_SETTINGS.contactInfo },
       });
     }

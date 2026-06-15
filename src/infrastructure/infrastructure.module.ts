@@ -156,7 +156,11 @@ import { CompositeMediaStorageAdapter } from './media/composite-media-storage.ad
         if (config.get<string>('SMTP_HOST')) return nodemailer;
         return noop;
       },
-      inject: [ConfigService, NoopNotificationAdapter, NodemailerNotificationAdapter],
+      inject: [
+        ConfigService,
+        NoopNotificationAdapter,
+        NodemailerNotificationAdapter,
+      ],
     },
     UrlPassthroughAdapter,
     S3CompatibleStorageAdapter,

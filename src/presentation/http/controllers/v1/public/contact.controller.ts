@@ -16,9 +16,7 @@ import { SubmitContactDto } from '../../../dto/v1/contact.dto';
 @ApiTags('Contact (Public) v1')
 @Controller({ path: 'contact', version: '1' })
 export class ContactPublicV1Controller {
-  constructor(
-    private readonly submitContact: SubmitContactMessageUseCase,
-  ) {}
+  constructor(private readonly submitContact: SubmitContactMessageUseCase) {}
 
   @Post()
   @Public()
@@ -28,9 +26,7 @@ export class ContactPublicV1Controller {
   submit(@Body() dto: SubmitContactDto, @Req() req: Request) {
     const forwarded = req.headers['x-forwarded-for'];
     const ip =
-      typeof forwarded === 'string'
-        ? forwarded.split(',')[0]?.trim()
-        : req.ip;
+      typeof forwarded === 'string' ? forwarded.split(',')[0]?.trim() : req.ip;
     return this.submitContact.execute({ ...dto, ipAddress: ip ?? null });
   }
 }

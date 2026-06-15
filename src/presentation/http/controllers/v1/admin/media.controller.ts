@@ -5,7 +5,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UploadMediaUseCase } from '@application/media/use-cases/upload-media.use-case';
 import { Permissions } from '../../../decorators/permissions.decorator';
 import { AppErrors } from '@application/exceptions/application.exception';

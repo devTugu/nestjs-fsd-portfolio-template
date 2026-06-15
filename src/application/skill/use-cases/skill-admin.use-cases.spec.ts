@@ -50,9 +50,7 @@ describe('Skill admin use cases', () => {
 
   it('lists public skills', async () => {
     skills.findAllPublished.mockResolvedValue([skill]);
-    const result = await new ListPublicSkillsUseCase(
-      skills as never,
-    ).execute();
+    const result = await new ListPublicSkillsUseCase(skills as never).execute();
     expect(result).toHaveLength(1);
   });
 

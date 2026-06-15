@@ -1,4 +1,7 @@
-import { ContactMessage, ContactMessageStatus } from '../entities/contact-message.entity';
+import {
+  ContactMessage,
+  ContactMessageStatus,
+} from '../entities/contact-message.entity';
 import { PaginatedResult } from '@shared/types/pagination';
 
 export interface CreateContactMessageData {
@@ -18,7 +21,12 @@ export interface ListContactMessagesQuery {
 export interface IContactMessageRepository {
   create(data: CreateContactMessageData): Promise<ContactMessage>;
   findById(id: number): Promise<ContactMessage | null>;
-  findAll(query: ListContactMessagesQuery): Promise<PaginatedResult<ContactMessage>>;
-  updateStatus(id: number, status: ContactMessageStatus): Promise<ContactMessage>;
+  findAll(
+    query: ListContactMessagesQuery,
+  ): Promise<PaginatedResult<ContactMessage>>;
+  updateStatus(
+    id: number,
+    status: ContactMessageStatus,
+  ): Promise<ContactMessage>;
   delete(id: number): Promise<void>;
 }

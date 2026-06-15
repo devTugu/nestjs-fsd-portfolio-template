@@ -11,13 +11,15 @@ export class UrlPassthroughAdapter implements IMediaStoragePort {
     return false;
   }
 
-  async upload(_file: {
+  upload(_file: {
     buffer: Buffer;
     mimeType: string;
     filename: string;
   }): Promise<MediaUploadResult> {
-    throw AppErrors.BAD_REQUEST(
-      'Direct upload is disabled. Provide an image URL instead.',
+    return Promise.reject(
+      AppErrors.BAD_REQUEST(
+        'Direct upload is disabled. Provide an image URL instead.',
+      ),
     );
   }
 }

@@ -131,7 +131,9 @@ describe('Portfolio API (e2e)', () => {
   });
 
   it('GET /api/v1/site-settings returns 200 without token', () => {
-    return request(app.getHttpServer()).get('/api/v1/site-settings').expect(200);
+    return request(app.getHttpServer())
+      .get('/api/v1/site-settings')
+      .expect(200);
   });
 
   it('POST /api/v1/contact creates message', () => {
@@ -175,7 +177,9 @@ describe('Portfolio API (e2e)', () => {
   });
 
   it('GET /api/v1/admin/projects returns 401 without token', () => {
-    return request(app.getHttpServer()).get('/api/v1/admin/projects').expect(401);
+    return request(app.getHttpServer())
+      .get('/api/v1/admin/projects')
+      .expect(401);
   });
 
   it('GET unpublished project by slug returns 404', () => {

@@ -8,11 +8,10 @@ import {
 export class NoopNotificationAdapter implements INotificationPort {
   private readonly logger = new Logger(NoopNotificationAdapter.name);
 
-  async sendContactNotification(
-    payload: ContactNotificationPayload,
-  ): Promise<void> {
+  sendContactNotification(payload: ContactNotificationPayload): Promise<void> {
     this.logger.debug(
       `Contact notification skipped (no SMTP): ${payload.email}`,
     );
+    return Promise.resolve();
   }
 }

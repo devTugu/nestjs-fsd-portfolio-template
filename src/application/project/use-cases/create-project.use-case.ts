@@ -1,12 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IProjectRepository } from '@domain/project/repositories/project.repository.interface';
-import { AppErrors } from '@application/exceptions/application.exception';
 import { ProjectOutput, toProjectOutput } from '../dto/project-output.mapper';
 import { PROJECT_REPOSITORY } from '@shared/constants/tokens';
-import {
-  generateSlug,
-  generateUniqueSlug,
-} from '@shared/utils/generate-slug';
+import { generateSlug, generateUniqueSlug } from '@shared/utils/generate-slug';
 
 @Injectable()
 export class CreateProjectUseCase {

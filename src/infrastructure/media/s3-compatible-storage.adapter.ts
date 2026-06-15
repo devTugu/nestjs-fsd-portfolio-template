@@ -45,10 +45,12 @@ export class S3CompatibleStorageAdapter implements IMediaStoragePort {
       const key = `uploads/${Date.now()}-${file.filename}`;
       await client.send(
         new PutObjectCommand({
+          /* eslint-disable @typescript-eslint/naming-convention -- AWS SDK input shape */
           Bucket: bucket,
           Key: key,
           Body: file.buffer,
           ContentType: file.mimeType,
+          /* eslint-enable @typescript-eslint/naming-convention */
         }),
       );
 

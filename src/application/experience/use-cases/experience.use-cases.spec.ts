@@ -49,9 +49,9 @@ describe('Experience use cases', () => {
 
   it('gets experience', async () => {
     experiences.findById.mockResolvedValue(experience);
-    const result = await new GetExperienceUseCase(
-      experiences as never,
-    ).execute(1);
+    const result = await new GetExperienceUseCase(experiences as never).execute(
+      1,
+    );
     expect(result.id).toBe(1);
   });
 

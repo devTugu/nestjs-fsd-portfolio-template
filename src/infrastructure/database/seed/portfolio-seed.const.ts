@@ -45,13 +45,55 @@ export const DEMO_PROJECTS = [
 ];
 
 export const DEMO_SKILLS = [
-  { name: 'TypeScript', category: 'frontend', proficiency: 5, icon: 'typescript', sortOrder: 0 },
-  { name: 'React', category: 'frontend', proficiency: 5, icon: 'react', sortOrder: 1 },
-  { name: 'Next.js', category: 'frontend', proficiency: 4, icon: 'nextjs', sortOrder: 2 },
-  { name: 'NestJS', category: 'backend', proficiency: 5, icon: 'nestjs', sortOrder: 3 },
-  { name: 'Node.js', category: 'backend', proficiency: 5, icon: 'nodejs', sortOrder: 4 },
-  { name: 'MySQL', category: 'backend', proficiency: 4, icon: 'mysql', sortOrder: 5 },
-  { name: 'Docker', category: 'tool', proficiency: 4, icon: 'docker', sortOrder: 6 },
+  {
+    name: 'TypeScript',
+    category: 'frontend',
+    proficiency: 5,
+    icon: 'typescript',
+    sortOrder: 0,
+  },
+  {
+    name: 'React',
+    category: 'frontend',
+    proficiency: 5,
+    icon: 'react',
+    sortOrder: 1,
+  },
+  {
+    name: 'Next.js',
+    category: 'frontend',
+    proficiency: 4,
+    icon: 'nextjs',
+    sortOrder: 2,
+  },
+  {
+    name: 'NestJS',
+    category: 'backend',
+    proficiency: 5,
+    icon: 'nestjs',
+    sortOrder: 3,
+  },
+  {
+    name: 'Node.js',
+    category: 'backend',
+    proficiency: 5,
+    icon: 'nodejs',
+    sortOrder: 4,
+  },
+  {
+    name: 'MySQL',
+    category: 'backend',
+    proficiency: 4,
+    icon: 'mysql',
+    sortOrder: 5,
+  },
+  {
+    name: 'Docker',
+    category: 'tool',
+    proficiency: 4,
+    icon: 'docker',
+    sortOrder: 6,
+  },
   { name: 'Git', category: 'tool', proficiency: 5, icon: 'git', sortOrder: 7 },
 ];
 
