@@ -6,7 +6,7 @@ describe('UploadMediaUseCase', () => {
       isEnabled: () => true,
       upload: jest.fn().mockResolvedValue({ url: 'https://cdn/x.png' }),
     };
-    const result = await new UploadMediaUseCase(storage as never).execute({
+    const result = await new UploadMediaUseCase(storage).execute({
       buffer: Buffer.from('x'),
       mimeType: 'image/png',
       filename: 'x.png',

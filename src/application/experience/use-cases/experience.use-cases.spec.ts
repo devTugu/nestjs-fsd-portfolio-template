@@ -36,9 +36,7 @@ describe('Experience use cases', () => {
 
   it('creates experience', async () => {
     experiences.create.mockResolvedValue(experience);
-    const result = await new CreateExperienceUseCase(
-      experiences as never,
-    ).execute({
+    const result = await new CreateExperienceUseCase(experiences).execute({
       company: 'Co',
       role: 'Dev',
       startDate: '2022-01-01',
@@ -49,9 +47,7 @@ describe('Experience use cases', () => {
 
   it('gets experience', async () => {
     experiences.findById.mockResolvedValue(experience);
-    const result = await new GetExperienceUseCase(experiences as never).execute(
-      1,
-    );
+    const result = await new GetExperienceUseCase(experiences).execute(1);
     expect(result.id).toBe(1);
   });
 
@@ -63,16 +59,14 @@ describe('Experience use cases', () => {
       limit: 20,
       totalPages: 1,
     });
-    const result = await new ListExperiencesUseCase(
-      experiences as never,
-    ).execute({});
+    const result = await new ListExperiencesUseCase(experiences).execute({});
     expect(result.items).toHaveLength(1);
   });
 
   it('lists public experiences', async () => {
     experiences.findAllPublished.mockResolvedValue([experience]);
     const result = await new ListPublicExperiencesUseCase(
-      experiences as never,
+      experiences,
     ).execute();
     expect(result).toHaveLength(1);
   });
@@ -80,15 +74,15 @@ describe('Experience use cases', () => {
   it('updates experience', async () => {
     experiences.findById.mockResolvedValue(experience);
     experiences.update.mockResolvedValue({ ...experience, role: 'Lead' });
-    const result = await new UpdateExperienceUseCase(
-      experiences as never,
-    ).execute(1, { role: 'Lead' });
+    const result = await new UpdateExperienceUseCase(experiences).execute(1, {
+      role: 'Lead',
+    });
     expect(result.role).toBe('Lead');
   });
 
   it('deletes experience', async () => {
     experiences.findById.mockResolvedValue(experience);
-    await new DeleteExperienceUseCase(experiences as never).execute(1);
+    await new DeleteExperienceUseCase(experiences).execute(1);
     expect(experiences.softDelete).toHaveBeenCalledWith(1);
   });
 });

@@ -26,7 +26,12 @@ export class ProjectEntity {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ name: 'thumbnail_url', type: 'varchar', length: 500, nullable: true })
+  @Column({
+    name: 'thumbnail_url',
+    type: 'varchar',
+    length: 500,
+    nullable: true,
+  })
   thumbnailUrl: string | null;
 
   @Column({ type: 'json', nullable: true })

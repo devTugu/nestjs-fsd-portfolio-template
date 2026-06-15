@@ -94,7 +94,7 @@ export class JwtTokenIssuerAdapter implements ITokenIssuer {
     try {
       const decoded: unknown = this.jwtService.decode(token);
       if (!decoded || typeof decoded !== 'object') return null;
-      return decoded as { jti?: string; exp?: number };
+      return decoded;
     } catch {
       return null;
     }

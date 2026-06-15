@@ -33,15 +33,13 @@ describe('Site settings use cases', () => {
 
   it('returns defaults when no row', async () => {
     repo.get.mockResolvedValue(null);
-    const result = await new GetPublicSiteSettingsUseCase(
-      repo as never,
-    ).execute();
+    const result = await new GetPublicSiteSettingsUseCase(repo).execute();
     expect(result.hero.title).toBeDefined();
   });
 
   it('returns stored settings', async () => {
     repo.get.mockResolvedValue(settings);
-    const result = await new GetSiteSettingsUseCase(repo as never).execute();
+    const result = await new GetSiteSettingsUseCase(repo).execute();
     expect(result.id).toBe(1);
   });
 
@@ -50,7 +48,7 @@ describe('Site settings use cases', () => {
       ...settings,
       hero: { ...settings.hero, title: 'Updated' },
     });
-    const result = await new UpdateSiteSettingsUseCase(repo as never).execute({
+    const result = await new UpdateSiteSettingsUseCase(repo).execute({
       hero: { title: 'Updated' },
     });
     expect(result.hero.title).toBe('Updated');

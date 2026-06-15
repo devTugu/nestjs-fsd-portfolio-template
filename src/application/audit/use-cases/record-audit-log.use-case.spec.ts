@@ -5,7 +5,7 @@ describe('RecordAuditLogUseCase', () => {
     const auditLogs = {
       save: jest.fn().mockRejectedValue(new Error('db down')),
     };
-    const useCase = new RecordAuditLogUseCase(auditLogs as never);
+    const useCase = new RecordAuditLogUseCase(auditLogs);
     await expect(
       useCase.execute({
         userId: 1,
@@ -20,7 +20,7 @@ describe('RecordAuditLogUseCase', () => {
 
   it('persists audit record', async () => {
     const auditLogs = { save: jest.fn().mockResolvedValue(undefined) };
-    const useCase = new RecordAuditLogUseCase(auditLogs as never);
+    const useCase = new RecordAuditLogUseCase(auditLogs);
     await useCase.execute({
       userId: null,
       action: 'LOGIN',

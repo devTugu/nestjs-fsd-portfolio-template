@@ -22,7 +22,7 @@ describe('LoginUseCase', () => {
   const useCase = new LoginUseCase(
     users as never,
     refreshTokens as never,
-    hasher as never,
+    hasher,
     tokens as never,
     permissionCache as never,
     config as never,

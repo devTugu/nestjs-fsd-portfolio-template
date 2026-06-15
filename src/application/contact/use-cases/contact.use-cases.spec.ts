@@ -5,7 +5,7 @@ describe('SubmitContactMessageUseCase', () => {
   const notifications = { sendContactNotification: jest.fn() };
   const useCase = new SubmitContactMessageUseCase(
     messages as never,
-    notifications as never,
+    notifications,
   );
 
   it('submits valid contact message', async () => {
