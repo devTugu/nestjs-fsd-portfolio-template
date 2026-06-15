@@ -19,7 +19,7 @@ export class ContactMessageEntity {
   @Column({ length: 255 })
   email: string;
 
-  @Column({ length: 200, nullable: true })
+  @Column({ type: 'varchar', length: 200, nullable: true })
   subject: string | null;
 
   @Column({ type: 'text' })
@@ -33,7 +33,7 @@ export class ContactMessageEntity {
   })
   status: ContactMessageStatusEntity;
 
-  @Column({ name: 'ip_address', length: 45, nullable: true })
+  @Column({ name: 'ip_address', type: 'varchar', length: 45, nullable: true })
   ipAddress: string | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })

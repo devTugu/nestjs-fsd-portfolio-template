@@ -19,7 +19,7 @@ export class ExperienceEntity {
   @Column({ length: 200 })
   role: string;
 
-  @Column({ length: 200, nullable: true })
+  @Column({ type: 'varchar', length: 200, nullable: true })
   location: string | null;
 
   @Column({ type: 'text', nullable: true })

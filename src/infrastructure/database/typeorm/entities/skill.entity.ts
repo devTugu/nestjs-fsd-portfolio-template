@@ -22,7 +22,7 @@ export class SkillEntity {
   @Column({ type: 'tinyint', default: 3 })
   proficiency: number;
 
-  @Column({ length: 100, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   icon: string | null;
 
   @Index('IDX_skills_published_sort')

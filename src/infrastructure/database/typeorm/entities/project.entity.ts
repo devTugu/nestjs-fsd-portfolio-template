@@ -26,7 +26,7 @@ export class ProjectEntity {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ name: 'thumbnail_url', length: 500, nullable: true })
+  @Column({ name: 'thumbnail_url', type: 'varchar', length: 500, nullable: true })
   thumbnailUrl: string | null;
 
   @Column({ type: 'json', nullable: true })
@@ -35,10 +35,10 @@ export class ProjectEntity {
   @Column({ name: 'tech_stack', type: 'json' })
   techStack: string[];
 
-  @Column({ name: 'live_url', length: 500, nullable: true })
+  @Column({ name: 'live_url', type: 'varchar', length: 500, nullable: true })
   liveUrl: string | null;
 
-  @Column({ name: 'repo_url', length: 500, nullable: true })
+  @Column({ name: 'repo_url', type: 'varchar', length: 500, nullable: true })
   repoUrl: string | null;
 
   @Index('IDX_projects_featured_published')
