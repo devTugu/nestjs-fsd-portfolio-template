@@ -29,6 +29,7 @@ import { SiteSettingPresentationModule } from '@presentation/http/modules/site-s
 import { ContactPresentationModule } from '@presentation/http/modules/contact.presentation.module';
 import { MediaPresentationModule } from '@presentation/http/modules/media.presentation.module';
 import { DashboardPresentationModule } from '@presentation/http/modules/dashboard.presentation.module';
+import { AuditPresentationModule } from '@presentation/http/modules/audit.presentation.module';
 
 @Module({
   imports: [
@@ -79,6 +80,7 @@ import { DashboardPresentationModule } from '@presentation/http/modules/dashboar
     ContactPresentationModule,
     MediaPresentationModule,
     DashboardPresentationModule,
+    AuditPresentationModule,
   ],
   providers: [
     RecordAuditLogUseCase,

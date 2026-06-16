@@ -7,6 +7,7 @@ import { ITokenIssuer } from '@application/ports/token-issuer.port';
 import { IPermissionCache } from '@application/ports/permission-cache.port';
 import { AppErrors } from '@application/exceptions/application.exception';
 import { TokenPair } from '@shared/types/pagination';
+import { LoginResult } from '../dto/login-result';
 import {
   USER_REPOSITORY,
   REFRESH_TOKEN_REPOSITORY,
@@ -29,24 +30,39 @@ export class LoginUseCase {
     private readonly config: ConfigService,
   ) {}
 
-  async execute(email: string, password: string): Promise<TokenPair> {
+  async execute(email: string, password: string): Promise<LoginResult> {
     const user = await this.users.findByEmailWithRolesAndPermissions(email);
-    if (!user) throw AppErrors.UNAUTHORIZED('Invalid email or password.');
+    if (!user || !user.passwordHash) {
+      throw AppErrors.UNAUTHORIZED('Invalid email or password.');
+    }
 
     const valid = await this.hasher.compare(password, user.passwordHash);
     if (!valid) throw AppErrors.UNAUTHORIZED('Invalid email or password.');
 
+    const requiresMfa =
+      user.mfaEnabled ||
+      user.roleNames.includes('SUPER_ADMIN');
+
+    if (requiresMfa && user.mfaEnabled) {
+      const mfaToken = await this.tokens.issueMfaPendingToken(user.id);
+      return { requiresMfa: true, mfaToken };
+    }
+
+    await this.warmPermissionCache(user.id, user.roleNames, user.permissionCodes);
+    return this.issueTokens(user.id, user.email);
+  }
+
+  private async warmPermissionCache(
+    userId: number,
+    roleNames: string[],
+    permissionCodes: string[],
+  ): Promise<void> {
     const ttl = this.config.get<number>('PERMISSION_CACHE_TTL_SEC', 60);
     await this.permissionCache.set(
-      user.id,
-      {
-        roleNames: user.roleNames,
-        permissionCodes: user.permissionCodes,
-      },
+      userId,
+      { roleNames, permissionCodes },
       ttl,
     );
-
-    return this.issueTokens(user.id, user.email);
   }
 
   private async issueTokens(userId: number, email: string): Promise<TokenPair> {

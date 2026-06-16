@@ -16,6 +16,7 @@ describe('Role CRUD use cases', () => {
     replacePermissions: jest.fn(),
     assignToUser: jest.fn(),
     removeFromUser: jest.fn(),
+    findUserIdsByRoleId: jest.fn().mockResolvedValue([1, 2]),
   };
   const cache = { invalidate: jest.fn() };
 
@@ -57,7 +58,7 @@ describe('Role CRUD use cases', () => {
     it('replaces permissions atomically', async () => {
       roles.findById.mockResolvedValue({ id: 1 });
       roles.update.mockResolvedValue({ id: 1, name: 'ADMIN' });
-      const useCase = new UpdateRoleUseCase(roles as never);
+      const useCase = new UpdateRoleUseCase(roles as never, cache as never);
       await useCase.execute(1, { permissionIds: [1, 2] });
       expect(roles.replacePermissions).toHaveBeenCalledWith(1, [1, 2]);
     });
@@ -66,7 +67,7 @@ describe('Role CRUD use cases', () => {
   describe('DeleteRoleUseCase', () => {
     it('soft deletes role', async () => {
       roles.findById.mockResolvedValue({ id: 1 });
-      const useCase = new DeleteRoleUseCase(roles as never);
+      const useCase = new DeleteRoleUseCase(roles as never, cache as never);
       await useCase.execute(1);
       expect(roles.softDelete).toHaveBeenCalledWith(1);
     });

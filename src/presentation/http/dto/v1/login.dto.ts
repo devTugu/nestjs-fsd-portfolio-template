@@ -17,3 +17,27 @@ export class RefreshDto {
   @IsString()
   refreshToken: string;
 }
+
+export class MfaLoginDto {
+  @ApiProperty()
+  @IsString()
+  mfaToken: string;
+
+  @ApiProperty()
+  @IsString()
+  @MinLength(6)
+  code: string;
+}
+
+export class MfaVerifyEnrollDto {
+  @ApiProperty()
+  @IsString()
+  @MinLength(6)
+  code: string;
+}
+
+export class OAuthCallbackDto {
+  @ApiProperty({ description: 'Full callback URL from IdP redirect' })
+  @IsString()
+  callbackUrl: string;
+}

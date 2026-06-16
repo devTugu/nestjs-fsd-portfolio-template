@@ -90,6 +90,30 @@ export class JwtTokenIssuerAdapter implements ITokenIssuer {
     return Promise.resolve(verified);
   }
 
+  issueMfaPendingToken(userId: number): Promise<string> {
+    const secret = this.config.getOrThrow<string>('JWT_ACCESS_SECRET');
+    const token = this.jwtService.sign(
+      { sub: userId, type: 'mfa_pending' },
+      { secret, expiresIn: 300 },
+    );
+    return Promise.resolve(token);
+  }
+
+  verifyMfaPending(token: string): Promise<{ sub: number; type: 'mfa_pending' }> {
+    const secret = this.config.getOrThrow<string>('JWT_ACCESS_SECRET');
+    const verified: unknown = this.jwtService.verify(token, { secret });
+    if (
+      !verified ||
+      typeof verified !== 'object' ||
+      !('type' in verified) ||
+      (verified as { type: string }).type !== 'mfa_pending' ||
+      !('sub' in verified)
+    ) {
+      return Promise.reject(new Error('INVALID_MFA_TOKEN'));
+    }
+    return Promise.resolve(verified as { sub: number; type: 'mfa_pending' });
+  }
+
   decodeAccess(token: string): { jti?: string; exp?: number } | null {
     try {
       const decoded: unknown = this.jwtService.decode(token);

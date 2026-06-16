@@ -5,11 +5,18 @@ export interface CreateUserData {
   email: string;
   passwordHash: string;
   isActive: boolean;
+  oauthProvider?: string | null;
+  oauthSubject?: string | null;
 }
 
 export interface UpdateUserData {
   passwordHash?: string;
   isActive?: boolean;
+  mfaEnabled?: boolean;
+  mfaSecretEncrypted?: string | null;
+  oauthProvider?: string | null;
+  oauthSubject?: string | null;
+  email?: string;
 }
 
 export interface ListUsersQuery {
@@ -23,9 +30,12 @@ export interface IUserRepository {
   findById(id: number): Promise<User | null>;
   findByEmail(email: string): Promise<User | null>;
   findByEmailWithRolesAndPermissions(email: string): Promise<User | null>;
+  findByOAuth(provider: string, subject: string): Promise<User | null>;
   findActiveById(id: number): Promise<User | null>;
   findAll(query: ListUsersQuery): Promise<PaginatedResult<User>>;
   update(id: number, data: UpdateUserData): Promise<User>;
   softDelete(id: number): Promise<void>;
+  anonymize(id: number): Promise<void>;
   emailExists(email: string): Promise<boolean>;
+  getMfaSecretEncrypted(id: number): Promise<string | null>;
 }

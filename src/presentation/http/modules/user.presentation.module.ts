@@ -5,6 +5,10 @@ import { ListUsersUseCase } from '@application/user/use-cases/list-users.use-cas
 import { GetUserUseCase } from '@application/user/use-cases/get-user.use-case';
 import { UpdateUserUseCase } from '@application/user/use-cases/update-user.use-case';
 import { DeleteUserUseCase } from '@application/user/use-cases/delete-user.use-case';
+import {
+  AnonymizeUserUseCase,
+  ExportUserDataUseCase,
+} from '@application/user/use-cases/gdpr.use-cases';
 
 @Module({
   controllers: [UserV1Controller],
@@ -14,6 +18,8 @@ import { DeleteUserUseCase } from '@application/user/use-cases/delete-user.use-c
     GetUserUseCase,
     UpdateUserUseCase,
     DeleteUserUseCase,
+    ExportUserDataUseCase,
+    AnonymizeUserUseCase,
   ],
 })
 export class UserPresentationModule {}

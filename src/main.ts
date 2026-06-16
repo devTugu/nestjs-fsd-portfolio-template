@@ -8,9 +8,8 @@ import { AppModule } from './app.module';
 import { initTracing } from '@infrastructure/observability/tracing';
 import { configureApp } from '@shared/bootstrap/configure-app';
 
-initTracing();
-
 async function bootstrap() {
+  await initTracing();
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
   });

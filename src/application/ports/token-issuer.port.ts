@@ -10,6 +10,11 @@ export interface RefreshTokenClaims {
   type: 'refresh';
 }
 
+export interface MfaPendingClaims {
+  sub: number;
+  type: 'mfa_pending';
+}
+
 export interface IssuedTokens {
   accessToken: string;
   refreshToken: string;
@@ -20,6 +25,8 @@ export interface IssuedTokens {
 
 export interface ITokenIssuer {
   issuePair(userId: number, email: string): Promise<IssuedTokens>;
+  issueMfaPendingToken(userId: number): Promise<string>;
+  verifyMfaPending(token: string): Promise<MfaPendingClaims>;
   verifyRefresh(token: string): Promise<RefreshTokenClaims>;
   decodeAccess(token: string): { jti?: string; exp?: number } | null;
 }

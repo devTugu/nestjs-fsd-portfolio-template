@@ -33,6 +33,8 @@ import {
   CONTACT_MESSAGE_REPOSITORY,
   NOTIFICATION_PORT,
   MEDIA_STORAGE_PORT,
+  MFA_VERIFIER,
+  OAUTH_IDENTITY,
 } from '@shared/constants/tokens';
 import { UserTypeOrmRepository } from './repositories/user.typeorm-repository';
 import { RefreshTokenTypeOrmRepository } from './repositories/refresh-token.typeorm-repository';
@@ -61,6 +63,9 @@ import { NodemailerNotificationAdapter } from './notification/nodemailer-notific
 import { UrlPassthroughAdapter } from './media/url-passthrough.adapter';
 import { S3CompatibleStorageAdapter } from './media/s3-compatible-storage.adapter';
 import { CompositeMediaStorageAdapter } from './media/composite-media-storage.adapter';
+import { TotpMfaAdapter } from './auth/totp-mfa.adapter';
+import { OidcIdentityAdapter } from './auth/oidc-identity.adapter';
+import { IMfaVerifier, IOAuthIdentityProvider } from '@application/ports/identity.port';
 
 @Global()
 @Module({
@@ -169,6 +174,8 @@ import { CompositeMediaStorageAdapter } from './media/composite-media-storage.ad
       provide: MEDIA_STORAGE_PORT,
       useExisting: CompositeMediaStorageAdapter,
     },
+    { provide: MFA_VERIFIER, useClass: TotpMfaAdapter },
+    { provide: OAUTH_IDENTITY, useClass: OidcIdentityAdapter },
   ],
   exports: [
     JwtModule,
@@ -191,6 +198,8 @@ import { CompositeMediaStorageAdapter } from './media/composite-media-storage.ad
     PERMISSION_CACHE,
     NOTIFICATION_PORT,
     MEDIA_STORAGE_PORT,
+    MFA_VERIFIER,
+    OAUTH_IDENTITY,
   ],
 })
 export class InfrastructureModule {}

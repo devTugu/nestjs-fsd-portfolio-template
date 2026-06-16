@@ -99,8 +99,53 @@ export class UserTypeOrmRepository implements IUserRepository {
     });
     if (data.passwordHash) entity.passwordHash = data.passwordHash;
     if (data.isActive !== undefined) entity.isActive = data.isActive;
+    if (data.mfaEnabled !== undefined) entity.mfaEnabled = data.mfaEnabled;
+    if (data.mfaSecretEncrypted !== undefined) {
+      entity.mfaSecretEncrypted = data.mfaSecretEncrypted;
+    }
+    if (data.oauthProvider !== undefined) entity.oauthProvider = data.oauthProvider;
+    if (data.oauthSubject !== undefined) entity.oauthSubject = data.oauthSubject;
+    if (data.email) entity.email = data.email.toLowerCase();
     const saved = await this.repository.save(entity);
     return UserMapper.toDomain(saved, true);
+  }
+
+  async findByOAuth(
+    provider: string,
+    subject: string,
+  ): Promise<DomainUser | null> {
+    const entity = await this.repository.findOne({
+      where: {
+        oauthProvider: provider,
+        oauthSubject: subject,
+        deletedAt: IsNull(),
+      },
+      relations: {
+        userRoles: { role: { rolePermissions: { permission: true } } },
+      },
+    });
+    return entity ? UserMapper.toDomain(entity, true) : null;
+  }
+
+  async getMfaSecretEncrypted(id: number): Promise<string | null> {
+    const entity = await this.repository.findOne({
+      where: { id, deletedAt: IsNull() },
+      select: ['mfaSecretEncrypted'],
+    });
+    return entity?.mfaSecretEncrypted ?? null;
+  }
+
+  async anonymize(id: number): Promise<void> {
+    await this.repository.update(id, {
+      email: `deleted-${id}@anonymized.local`,
+      passwordHash: null,
+      isActive: false,
+      oauthProvider: null,
+      oauthSubject: null,
+      mfaEnabled: false,
+      mfaSecretEncrypted: null,
+    });
+    await this.softDelete(id);
   }
 
   async softDelete(id: number): Promise<void> {

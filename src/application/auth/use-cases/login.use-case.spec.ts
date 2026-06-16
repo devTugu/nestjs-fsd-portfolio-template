@@ -44,11 +44,12 @@ describe('LoginUseCase', () => {
       passwordHash: 'hash',
       roleNames: ['ADMIN'],
       permissionCodes: ['USER_READ'],
+      mfaEnabled: false,
     });
     hasher.compare.mockResolvedValue(true);
 
     const result = await useCase.execute('a@b.com', 'pass');
-    expect(result.accessToken).toBe('access');
+    expect('accessToken' in result && result.accessToken).toBe('access');
     expect(refreshTokens.save).toHaveBeenCalled();
     expect(permissionCache.set).toHaveBeenCalled();
   });

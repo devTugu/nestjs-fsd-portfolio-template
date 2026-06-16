@@ -7,6 +7,7 @@ export const envValidationSchema = Joi.object({
     .valid('development', 'test', 'production')
     .default('development'),
   APP_PORT: Joi.number().port().default(3000),
+  PORT: Joi.number().port().optional(),
   LOG_LEVEL: Joi.string()
     .valid('error', 'warn', 'info', 'debug')
     .default('info'),
@@ -29,6 +30,37 @@ export const envValidationSchema = Joi.object({
   PERMISSION_CACHE_TTL_SEC: Joi.number().default(60),
 
   OTEL_ENABLED: Joi.string().valid('true', 'false').default('false'),
+  OTEL_EXPORTER_OTLP_ENDPOINT: Joi.when('OTEL_ENABLED', {
+    is: 'true',
+    then: Joi.string().uri().required(),
+    otherwise: Joi.string().uri().optional(),
+  }),
+  OTEL_SERVICE_NAME: Joi.string().default('portfolio-api'),
+
+  OAUTH_ENABLED: Joi.string().valid('true', 'false').default('false'),
+  OAUTH_ISSUER: Joi.when('OAUTH_ENABLED', {
+    is: 'true',
+    then: Joi.string().uri().required(),
+    otherwise: Joi.string().uri().optional(),
+  }),
+  OAUTH_CLIENT_ID: Joi.when('OAUTH_ENABLED', {
+    is: 'true',
+    then: Joi.string().min(1).required(),
+    otherwise: Joi.string().optional(),
+  }),
+  OAUTH_CLIENT_SECRET: Joi.when('OAUTH_ENABLED', {
+    is: 'true',
+    then: Joi.string().min(1).required(),
+    otherwise: Joi.string().optional(),
+  }),
+  OAUTH_CALLBACK_URL: Joi.when('OAUTH_ENABLED', {
+    is: 'true',
+    then: Joi.string().uri().required(),
+    otherwise: Joi.string().uri().optional(),
+  }),
+
+  MFA_ISSUER: Joi.string().default('Portfolio Admin'),
+  MFA_ENCRYPTION_KEY: Joi.string().min(32).optional(),
 
   JWT_ACCESS_SECRET: Joi.string().min(32).required(),
   JWT_REFRESH_SECRET: Joi.string().min(32).required(),

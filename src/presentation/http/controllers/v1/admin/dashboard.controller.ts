@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetDashboardStatsUseCase } from '@application/dashboard/use-cases/get-dashboard-stats.use-case';
+import { Permissions } from '../../../decorators/permissions.decorator';
 import { CurrentUser } from '../../../decorators/current-user.decorator';
 import { JwtPayload } from '@shared/types/pagination';
 
@@ -11,6 +12,7 @@ export class DashboardAdminV1Controller {
   constructor(private readonly getDashboardStats: GetDashboardStatsUseCase) {}
 
   @Get('stats')
+  @Permissions('DASHBOARD_READ')
   @ApiOperation({
     summary: 'Permission-aware dashboard counts in a single request',
   })

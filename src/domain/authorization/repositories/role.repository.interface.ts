@@ -24,4 +24,5 @@ export interface IRoleRepository {
   syncPermissions(roleId: number, permissionIds: number[]): Promise<void>;
   clearPermissions(roleId: number): Promise<void>;
   replacePermissions(roleId: number, permissionIds: number[]): Promise<void>;
+  findUserIdsByRoleId(roleId: number): Promise<number[]>;
 }

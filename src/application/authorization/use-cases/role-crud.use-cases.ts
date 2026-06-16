@@ -34,6 +34,7 @@ export class GetRoleUseCase {
 export class UpdateRoleUseCase {
   constructor(
     @Inject(ROLE_REPOSITORY) private readonly roles: IRoleRepository,
+    @Inject(PERMISSION_CACHE) private readonly cache: IPermissionCache,
   ) {}
 
   async execute(
@@ -45,6 +46,8 @@ export class UpdateRoleUseCase {
 
     if (input.permissionIds !== undefined) {
       await this.roles.replacePermissions(id, input.permissionIds);
+      const userIds = await this.roles.findUserIdsByRoleId(id);
+      await Promise.all(userIds.map((userId) => this.cache.invalidate(userId)));
     }
     return this.roles.update(id, {
       description: input.description,
@@ -57,12 +60,15 @@ export class UpdateRoleUseCase {
 export class DeleteRoleUseCase {
   constructor(
     @Inject(ROLE_REPOSITORY) private readonly roles: IRoleRepository,
+    @Inject(PERMISSION_CACHE) private readonly cache: IPermissionCache,
   ) {}
 
   async execute(id: number): Promise<void> {
     const role = await this.roles.findById(id);
     if (!role) throw AppErrors.NOT_FOUND('Role not found.');
+    const userIds = await this.roles.findUserIdsByRoleId(id);
     await this.roles.softDelete(id);
+    await Promise.all(userIds.map((userId) => this.cache.invalidate(userId)));
   }
 }
 

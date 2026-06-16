@@ -138,4 +138,12 @@ export class RoleTypeOrmRepository implements IRoleRepository {
       await manager.save(RolePermission, records);
     });
   }
+
+  async findUserIdsByRoleId(roleId: number): Promise<number[]> {
+    const rows = await this.userRoleRepository.find({
+      where: { roleId },
+      select: ['userId'],
+    });
+    return rows.map((row) => row.userId);
+  }
 }

@@ -24,6 +24,8 @@ export class UserMapper {
       entity.updatedAt,
       [...new Set(roleNames)],
       [...new Set(permissionCodes)],
+      entity.mfaEnabled,
+      entity.oauthProvider,
     );
   }
 }

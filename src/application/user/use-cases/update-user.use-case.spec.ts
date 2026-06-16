@@ -3,7 +3,16 @@ import { UpdateUserUseCase } from './update-user.use-case';
 describe('UpdateUserUseCase', () => {
   const users = { findById: jest.fn(), update: jest.fn() };
   const hasher = { hash: jest.fn() };
-  const useCase = new UpdateUserUseCase(users as never, hasher as never);
+  const cache = { invalidate: jest.fn() };
+  const useCase = new UpdateUserUseCase(
+    users as never,
+    hasher as never,
+    cache as never,
+  );
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('throws when user not found', async () => {
     users.findById.mockResolvedValue(null);
@@ -12,7 +21,7 @@ describe('UpdateUserUseCase', () => {
     });
   });
 
-  it('updates user with hashed password', async () => {
+  it('updates user with hashed password and invalidates cache', async () => {
     users.findById.mockResolvedValue({
       id: 1,
       email: 'a@b.com',
@@ -33,6 +42,7 @@ describe('UpdateUserUseCase', () => {
       isActive: false,
     });
     expect(hasher.hash).toHaveBeenCalledWith('NewPass123!');
+    expect(cache.invalidate).toHaveBeenCalledWith(1);
     expect(result.isActive).toBe(false);
   });
 });

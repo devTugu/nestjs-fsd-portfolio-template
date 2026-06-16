@@ -29,6 +29,8 @@ export const PERMISSION_CODES = [
   'CONTACT_READ',
   'CONTACT_UPDATE',
   'CONTACT_DELETE',
+  'DASHBOARD_READ',
+  'AUDIT_READ',
 ] as const;
 
 export const SUPER_ADMIN_ROLE_NAME = 'SUPER_ADMIN';
