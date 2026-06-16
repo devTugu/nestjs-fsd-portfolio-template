@@ -1,0 +1,52 @@
+global:
+  imagePullPolicy: IfNotPresent
+
+api:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: ghcr.io/devtugu/portfolio-api
+    tag: latest
+  port: 3001
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+frontend:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: ghcr.io/devtugu/portfolio-admin
+    tag: latest
+  port: 3000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+mysql:
+  enabled: true
+  auth:
+    database: app_db
+    username: app_user
+    password: changeme
+
+redis:
+  enabled: true
+
+ingress:
+  enabled: true
+  className: nginx
+  host: portfolio.example.com
+  tlsSecretName: portfolio-tls
+
+observability:
+  otelEnabled: true
+  otelEndpoint: http://otel-collector:4318/v1/traces
