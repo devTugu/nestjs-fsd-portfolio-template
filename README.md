@@ -1,7 +1,7 @@
 # Backend Nest — Portfolio CMS API (Clean Architecture)
 
 [![CI](https://github.com/devTugu/nestjs-fsd-portfolio-template/actions/workflows/ci.yml/badge.svg)](https://github.com/devTugu/nestjs-fsd-portfolio-template/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/github/license/devTugu/nestjs-fsd-portfolio-template)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Coverage](https://img.shields.io/badge/coverage-89%25-brightgreen)](https://github.com/devTugu/nestjs-fsd-portfolio-template/actions/workflows/ci.yml)
 
 Production-ready **NestJS** REST API for **portfolio websites** — **Clean Architecture**, **JWT + OIDC + TOTP MFA**, **RBAC**, **Redis**, **MySQL**, and a full **Portfolio CMS** (Projects, Skills, Experiences, Site Settings, Contact).
