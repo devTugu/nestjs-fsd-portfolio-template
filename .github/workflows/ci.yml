@@ -59,6 +59,7 @@ jobs:
       LOG_LEVEL: error
       MFA_ENCRYPTION_KEY: ci_mfa_encryption_key_minimum_32_chars
       MFA_ISSUER: Portfolio CI
+      MFA_REQUIRED_ROLES: CONTENT_MANAGER
       SEED_ADMIN_EMAIL: admin@example.com
       SEED_ADMIN_PASSWORD: Admin123!
 
