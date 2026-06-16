@@ -9,13 +9,17 @@ export class ExperienceMapper {
       entity.role,
       entity.location,
       entity.description,
-      entity.startDate,
-      entity.endDate,
+      ExperienceMapper.coerceDate(entity.startDate),
+      entity.endDate ? ExperienceMapper.coerceDate(entity.endDate) : null,
       entity.isCurrent,
       entity.isPublished,
       entity.sortOrder,
-      entity.createdAt,
-      entity.updatedAt,
+      ExperienceMapper.coerceDate(entity.createdAt),
+      ExperienceMapper.coerceDate(entity.updatedAt),
     );
+  }
+
+  private static coerceDate(value: Date | string): Date {
+    return value instanceof Date ? value : new Date(value);
   }
 }

@@ -1,14 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { ValidationPipe, VersioningType, LoggerService } from '@nestjs/common';
+import { LoggerService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import helmet from 'helmet';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const compression = require('compression') as typeof import('compression');
 import { AppModule } from './app.module';
 import { initTracing } from '@infrastructure/observability/tracing';
+import { configureApp } from '@shared/bootstrap/configure-app';
 
 initTracing();
 
@@ -22,29 +20,7 @@ async function bootstrap() {
   app.useLogger(logger);
 
   app.enableShutdownHooks();
-  app.set('trust proxy', 1);
-
-  app.use(helmet());
-  app.use(compression());
-
-  app.enableCors({
-    origin: configService.get<string>('CORS_ORIGIN', 'http://localhost:3000'),
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id'],
-    credentials: true,
-  });
-
-  app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
-  app.setGlobalPrefix('api');
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    }),
-  );
+  configureApp(app);
 
   const isSwaggerEnabled =
     configService.get<string>('SWAGGER_ENABLED', 'false') === 'true';

@@ -19,7 +19,9 @@ Copy [`.env.example`](../.env.example) to `.env` and set:
 | `REDIS_URL` | Redis cluster URL |
 | `JWT_*_SECRET` | Strong random strings (32+ chars); rotate periodically |
 | `DB_SSL` | `true` when provider requires TLS |
-| `CORS_ORIGIN` | Your frontend origin |
+| `CORS_ORIGIN` | Your Next.js frontend origin (BFF proxy; direct browser calls are uncommon) |
+| `LOG_LEVEL` | `info` or `warn` in production |
+| `LOGIN_THROTTLE_*` / `CONTACT_THROTTLE_*` | Tune auth/contact rate limits |
 
 ## Docker Compose
 

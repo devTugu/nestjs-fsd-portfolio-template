@@ -6,8 +6,11 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { WinstonModule } from 'nest-winston';
 import { envValidationSchema } from '@infrastructure/config/env.validation';
 import { createTypeOrmOptions } from '@infrastructure/config/typeorm.config';
-import { winstonConfig } from '@infrastructure/config/logger.config';
+import { createWinstonConfig } from '@infrastructure/config/logger.config';
 import { InfrastructureModule } from '@infrastructure/infrastructure.module';
+import { RedisClient } from '@infrastructure/cache/redis/redis.client';
+import { RedisThrottlerStorage } from '@infrastructure/cache/redis/throttler-storage.redis';
+import { isRedisEnabled } from '@infrastructure/config/redis.config';
 import { AllExceptionsFilter } from '@presentation/http/filters/all-exceptions.filter';
 import { LoggingInterceptor } from '@presentation/http/interceptors/logging.interceptor';
 import { ResponseInterceptor } from '@presentation/http/interceptors/response.interceptor';
@@ -25,10 +28,14 @@ import { ExperiencePresentationModule } from '@presentation/http/modules/experie
 import { SiteSettingPresentationModule } from '@presentation/http/modules/site-setting.presentation.module';
 import { ContactPresentationModule } from '@presentation/http/modules/contact.presentation.module';
 import { MediaPresentationModule } from '@presentation/http/modules/media.presentation.module';
+import { DashboardPresentationModule } from '@presentation/http/modules/dashboard.presentation.module';
 
 @Module({
   imports: [
-    WinstonModule.forRoot(winstonConfig),
+    WinstonModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => createWinstonConfig(config),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -39,14 +46,19 @@ import { MediaPresentationModule } from '@presentation/http/modules/media.presen
       },
     }),
     ThrottlerModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
+      imports: [InfrastructureModule],
+      inject: [ConfigService, RedisClient],
+      useFactory: (config: ConfigService, redis: RedisClient | null) => ({
         throttlers: [
           {
             ttl: config.get<number>('THROTTLE_TTL', 60) * 1000,
             limit: config.get<number>('THROTTLE_LIMIT', 60),
           },
         ],
+        storage:
+          isRedisEnabled(config) && redis
+            ? new RedisThrottlerStorage(redis)
+            : undefined,
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -66,6 +78,7 @@ import { MediaPresentationModule } from '@presentation/http/modules/media.presen
     SiteSettingPresentationModule,
     ContactPresentationModule,
     MediaPresentationModule,
+    DashboardPresentationModule,
   ],
   providers: [
     RecordAuditLogUseCase,

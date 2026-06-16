@@ -40,6 +40,8 @@ export const envValidationSchema = Joi.object({
   THROTTLE_LIMIT: Joi.number().default(60),
   LOGIN_THROTTLE_TTL: Joi.number().default(60),
   LOGIN_THROTTLE_LIMIT: Joi.number().default(5),
+  CONTACT_THROTTLE_TTL: Joi.number().default(60),
+  CONTACT_THROTTLE_LIMIT: Joi.number().default(5),
 
   SWAGGER_ENABLED: Joi.string().valid('true', 'false').default('false'),
 

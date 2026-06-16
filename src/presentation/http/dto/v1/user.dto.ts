@@ -10,6 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { PasswordComplexity } from '../../validators/password-complexity.validator';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'user@example.com' })
@@ -19,6 +20,7 @@ export class CreateUserDto {
   @ApiProperty({ example: 'Secret123!' })
   @IsString()
   @MinLength(8)
+  @PasswordComplexity()
   password: string;
 
   @ApiPropertyOptional({ example: true })
@@ -32,6 +34,7 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   @MinLength(8)
+  @PasswordComplexity()
   password?: string;
 
   @ApiPropertyOptional()

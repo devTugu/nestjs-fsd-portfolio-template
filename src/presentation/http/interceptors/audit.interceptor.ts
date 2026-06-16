@@ -1,10 +1,11 @@
 import {
   CallHandler,
   ExecutionContext,
+  HttpException,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { Observable, tap } from 'rxjs';
+import { Observable, catchError, tap, throwError } from 'rxjs';
 import type { Request } from 'express';
 import { RecordAuditLogUseCase } from '@application/audit/use-cases/record-audit-log.use-case';
 
@@ -36,7 +37,54 @@ export class AuditInterceptor implements NestInterceptor {
           metadata: auditMeta.metadata,
         });
       }),
+      catchError((error: unknown) => {
+        void this.recordFailure(request, method, auditMeta, error);
+        return throwError(() => error);
+      }),
     );
+  }
+
+  private async recordFailure(
+    request: Request,
+    method: string,
+    auditMeta: ReturnType<AuditInterceptor['resolveAuditMeta']>,
+    error: unknown,
+  ): Promise<void> {
+    if (!(error instanceof HttpException)) return;
+
+    const status = error.getStatus();
+    const path = request.path.toLowerCase();
+
+    if (status === 401 && path.includes('/auth/login')) {
+      await this.recordAudit.execute({
+        userId: null,
+        action: 'LOGIN_FAILED',
+        resource: 'auth',
+        resourceId: null,
+        ipAddress: this.resolveIp(request),
+        metadata: {
+          path: request.path,
+          method,
+          email: (request.body as { email?: string })?.email ?? null,
+        },
+      });
+      return;
+    }
+
+    if (status === 403) {
+      await this.recordAudit.execute({
+        userId: auditMeta.userId,
+        action: 'FORBIDDEN',
+        resource: auditMeta.resource,
+        resourceId: auditMeta.resourceId,
+        ipAddress: this.resolveIp(request),
+        metadata: {
+          path: request.path,
+          method,
+          requiredPermissions: error.message,
+        },
+      });
+    }
   }
 
   private isAuthAuditRoute(request: Request): boolean {

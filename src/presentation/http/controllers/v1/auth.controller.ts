@@ -22,6 +22,7 @@ import { GetUserUseCase } from '@application/user/use-cases/get-user.use-case';
 import { Public } from '../../decorators/public.decorator';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { LoginDto, RefreshDto } from '../../dto/v1/login.dto';
+import { LOGIN_THROTTLE_OPTIONS } from '../../config/throttle-options';
 import { JwtPayload, TokenPair } from '@shared/types/pagination';
 
 @ApiTags('Auth v1')
@@ -37,7 +38,7 @@ export class AuthV1Controller {
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @Throttle(LOGIN_THROTTLE_OPTIONS)
   @ApiOperation({ summary: 'Login with email and password' })
   @ApiResponse({
     status: 200,

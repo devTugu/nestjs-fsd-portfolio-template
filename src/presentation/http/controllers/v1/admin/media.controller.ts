@@ -14,6 +14,10 @@ import {
 import { UploadMediaUseCase } from '@application/media/use-cases/upload-media.use-case';
 import { Permissions } from '../../../decorators/permissions.decorator';
 import { AppErrors } from '@application/exceptions/application.exception';
+import {
+  bufferMatchesMimeType,
+  sanitizeFilename,
+} from '@shared/utils/file-signature.util';
 
 const ALLOWED_MIME = new Set([
   'image/jpeg',
@@ -40,10 +44,13 @@ export class MediaAdminV1Controller {
     if (!ALLOWED_MIME.has(file.mimetype)) {
       throw AppErrors.BAD_REQUEST('Unsupported file type.');
     }
+    if (!bufferMatchesMimeType(file.buffer, file.mimetype)) {
+      throw AppErrors.BAD_REQUEST('File content does not match declared type.');
+    }
     return this.uploadMedia.execute({
       buffer: file.buffer,
       mimeType: file.mimetype,
-      filename: file.originalname,
+      filename: sanitizeFilename(file.originalname),
     });
   }
 }
