@@ -2,15 +2,10 @@ name: Railway Deploy
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Secrets are not available in job-level `if` — skip entire job on push when not configured.
-    if: github.event_name == 'workflow_dispatch'
-
     steps:
       - uses: actions/checkout@v4
 

@@ -7,8 +7,31 @@ on:
     branches: [main, develop]
 
 jobs:
-  test:
+  quality:
     runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run build
+
+      - run: npm run test:cov
+
+      - name: Security audit
+        run: npm audit --audit-level=high
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: quality
 
     services:
       mysql:
@@ -73,12 +96,6 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run lint
-
-      - run: npm run build
-
-      - run: npm run test:cov
-
       - name: Run migrations and seed
         run: |
           for attempt in $(seq 1 30); do
@@ -104,6 +121,3 @@ jobs:
           helm template portfolio-test deploy/helm/portfolio-stack \
             --set api.enabled=true \
             --set frontend.enabled=true > /dev/null
-
-      - name: Security audit
-        run: npm audit --audit-level=high
