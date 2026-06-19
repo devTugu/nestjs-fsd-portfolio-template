@@ -1,4 +1,5 @@
 import { Experience } from '@domain/experience/entities/experience.entity';
+import { localizedText } from '@shared/domain/localized-content';
 import { toExperienceOutput } from './experience-output.mapper';
 
 describe('toExperienceOutput', () => {
@@ -6,7 +7,7 @@ describe('toExperienceOutput', () => {
     const experience = new Experience(
       1,
       'Acme',
-      'Engineer',
+      localizedText('Engineer', 'Инженер'),
       null,
       null,
       new Date('2022-01-15T00:00:00.000Z'),
@@ -28,7 +29,7 @@ describe('toExperienceOutput', () => {
     const experience = new Experience(
       1,
       'Acme',
-      'Engineer',
+      localizedText('Engineer', 'Инженер'),
       null,
       null,
       '2022-01-15' as unknown as Date,

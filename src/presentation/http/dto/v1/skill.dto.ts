@@ -7,8 +7,10 @@ import {
   Max,
   MaxLength,
   Min,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { LocalizedTextDto } from '../shared/localized-text.dto';
 
 export class CreateSkillDto {
   @ApiProperty()
@@ -16,10 +18,10 @@ export class CreateSkillDto {
   @MaxLength(100)
   name: string;
 
-  @ApiProperty({ example: 'frontend' })
-  @IsString()
-  @MaxLength(50)
-  category: string;
+  @ApiProperty()
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  category: LocalizedTextDto;
 
   @ApiProperty({ minimum: 1, maximum: 5 })
   @IsInt()
@@ -52,9 +54,9 @@ export class UpdateSkillDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  @MaxLength(50)
-  category?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  category?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()

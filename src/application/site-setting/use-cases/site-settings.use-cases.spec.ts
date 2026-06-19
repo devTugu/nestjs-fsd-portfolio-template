@@ -3,21 +3,34 @@ import {
   GetSiteSettingsUseCase,
   UpdateSiteSettingsUseCase,
 } from './site-settings.use-cases';
+import {
+  localizedText,
+  localizedStringList,
+} from '@shared/domain/localized-content';
 
 describe('Site settings use cases', () => {
   const settings = {
     id: 1,
     hero: {
-      title: 'Hi',
-      subtitle: 'Dev',
-      description: 'Desc',
-      ctaLabel: 'Go',
+      title: localizedText('Hi', 'Сайн'),
+      subtitle: localizedText('Dev', 'Dev'),
+      description: localizedText('Desc', 'Тайлбар'),
+      ctaLabel: localizedText('Go', 'Явах'),
       ctaUrl: '/',
       imageUrl: null,
     },
-    header: { logoUrl: null, siteName: 'P', navLinks: [] },
-    footer: { copyright: 'C', tagline: 'T', socialLinks: [] },
-    seo: { title: 'S', description: 'D', ogImageUrl: null, keywords: [] },
+    header: { logoUrl: null, siteName: localizedText('P', 'П') },
+    footer: {
+      copyright: localizedText('C', 'C'),
+      tagline: localizedText('T', 'T'),
+      socialLinks: [],
+    },
+    seo: {
+      title: localizedText('S', 'S'),
+      description: localizedText('D', 'D'),
+      ogImageUrl: null,
+      keywords: localizedStringList(['k'], ['k']),
+    },
     contactInfo: {
       email: 'a@b.com',
       phone: null,
@@ -34,7 +47,7 @@ describe('Site settings use cases', () => {
   it('returns defaults when no row', async () => {
     repo.get.mockResolvedValue(null);
     const result = await new GetPublicSiteSettingsUseCase(repo).execute();
-    expect(result.hero.title).toBeDefined();
+    expect(result.hero.title.en).toBeDefined();
   });
 
   it('returns stored settings', async () => {
@@ -46,11 +59,14 @@ describe('Site settings use cases', () => {
   it('updates settings', async () => {
     repo.upsert.mockResolvedValue({
       ...settings,
-      hero: { ...settings.hero, title: 'Updated' },
+      hero: {
+        ...settings.hero,
+        title: localizedText('Updated', 'Шинэчлэгдсэн'),
+      },
     });
     const result = await new UpdateSiteSettingsUseCase(repo).execute({
-      hero: { title: 'Updated' },
+      hero: { title: localizedText('Updated', 'Шинэчлэгдсэн') },
     });
-    expect(result.hero.title).toBe('Updated');
+    expect(result.hero.title.en).toBe('Updated');
   });
 });

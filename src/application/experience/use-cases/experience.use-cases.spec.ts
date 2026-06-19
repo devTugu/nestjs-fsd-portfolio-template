@@ -6,12 +6,13 @@ import {
   ListPublicExperiencesUseCase,
   UpdateExperienceUseCase,
 } from './experience.use-cases';
+import { localizedText } from '@shared/domain/localized-content';
 
 describe('Experience use cases', () => {
   const experience = {
     id: 1,
     company: 'Co',
-    role: 'Dev',
+    role: localizedText('Dev', 'Dev'),
     location: null,
     description: null,
     startDate: new Date('2022-01-01'),
@@ -38,7 +39,7 @@ describe('Experience use cases', () => {
     experiences.create.mockResolvedValue(experience);
     const result = await new CreateExperienceUseCase(experiences).execute({
       company: 'Co',
-      role: 'Dev',
+      role: localizedText('Dev', 'Dev'),
       startDate: '2022-01-01',
       isCurrent: true,
     });
@@ -73,11 +74,14 @@ describe('Experience use cases', () => {
 
   it('updates experience', async () => {
     experiences.findById.mockResolvedValue(experience);
-    experiences.update.mockResolvedValue({ ...experience, role: 'Lead' });
-    const result = await new UpdateExperienceUseCase(experiences).execute(1, {
-      role: 'Lead',
+    experiences.update.mockResolvedValue({
+      ...experience,
+      role: localizedText('Lead', 'Lead'),
     });
-    expect(result.role).toBe('Lead');
+    const result = await new UpdateExperienceUseCase(experiences).execute(1, {
+      role: localizedText('Lead', 'Lead'),
+    });
+    expect(result.role.en).toBe('Lead');
   });
 
   it('deletes experience', async () => {

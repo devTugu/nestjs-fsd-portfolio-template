@@ -4,11 +4,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Coverage](https://img.shields.io/badge/coverage-89%25-brightgreen)](https://github.com/devTugu/nestjs-fsd-portfolio-template/actions/workflows/ci.yml)
 
-Production-ready **NestJS** REST API for **portfolio websites** — **Clean Architecture**, **JWT + OIDC + TOTP MFA**, **RBAC**, **Redis**, **MySQL**, and a full **Portfolio CMS** (Projects, Skills, Experiences, Site Settings, Contact).
+Production-ready **NestJS** REST API for **portfolio websites** — **Clean Architecture**, **JWT + OIDC + TOTP MFA**, **RBAC**, **Redis**, **MySQL**, and a full **Portfolio CMS** (Projects, Skills, Experiences, Site Settings, Contact, **Blog**, **Pricing**, **Navigation**).
 
 Pairs with [nextjs-fsd-portfolio-template](https://github.com/devTugu/nextjs-fsd-portfolio-template) for the public site + admin UI (BFF, httpOnly cookies, inline MFA on `/sign-in`).
 
-**Regulated enterprise:** audit read API, retention scheduler, GDPR export/erasure, OTEL/Sentry opt-in, Railway + Helm deploy paths — see [REGULATED-ENTERPRISE-CHECKLIST.md v2.2](docs/REGULATED-ENTERPRISE-CHECKLIST.md).
+**Regulated enterprise:** audit read API, retention scheduler, GDPR export/erasure, OTEL/Sentry opt-in, Railway + Helm deploy paths — see [REGULATED-ENTERPRISE-CHECKLIST.md v2.3](docs/REGULATED-ENTERPRISE-CHECKLIST.md).
 
 ---
 
@@ -43,10 +43,10 @@ src/
 |-------|-------------|
 | [Architecture overview](docs/ARCHITECTURE.md) | Layers, modules, request flow |
 | [API reference](docs/API.md) | All v1 endpoints (public + admin) |
-| [Regulated checklist v2.2](docs/REGULATED-ENTERPRISE-CHECKLIST.md) | 29 controls + verification gate |
+| [Regulated checklist v2.3](docs/REGULATED-ENTERPRISE-CHECKLIST.md) | 29 controls + verification gate |
 | [Railway deploy](docs/RAILWAY.md) | Full-stack PaaS guide |
 | [Production](docs/PRODUCTION.md) · [Security](docs/SECURITY.md) · [Runbook](docs/RUNBOOK.md) | Deploy, hardening, incidents |
-| [ADR 001–009](docs/adr/) | Architecture decisions (Clean Arch → OIDC/MFA) |
+| [ADR 001–013](docs/adr/) | Architecture decisions (Clean Arch → blog/pricing CMS) |
 | [Contributing](docs/CONTRIBUTING.md) | Adding features |
 
 ---
@@ -59,7 +59,7 @@ src/
 
 CI enforces coverage thresholds: **application/** ≥80% lines (70% branches) · **domain/** ≥80%.
 
-Current local gate: **~89%** statements, **121** unit tests.
+Current local gate: **~89%** statements, **192** unit tests.
 
 ---
 
@@ -73,7 +73,7 @@ Current local gate: **~89%** statements, **121** unit tests.
 | Cache | Redis 7 (or in-memory when `REDIS_ENABLED=false`) |
 | Auth | JWT + refresh rotation + Redis blacklist |
 | Identity | Generic OIDC + TOTP MFA (Keycloak/Auth0 compatible) |
-| CMS | Projects, Skills, Experiences, Site Settings, Contact |
+| CMS | Projects, Skills, Experiences, Site Settings, Contact, Blog, Pricing, Navigation |
 | Media | URL fields (default); optional S3-compatible upload |
 | Email | Optional SMTP notifications for contact form |
 | Observability | Winston logs; OTEL + Sentry opt-in |
@@ -110,7 +110,7 @@ Seed creates:
 
 - RBAC roles: `SUPER_ADMIN`, `CONTENT_MANAGER`
 - Admin user: `admin@example.com` / `Admin123!` (override via `SEED_ADMIN_*`)
-- Demo portfolio content (3 projects, 8 skills, 2 experiences, site settings)
+- Demo portfolio + marketing content (projects, skills, experiences, blog, pricing, navigation, site settings)
 
 ### 3. Run
 
@@ -145,6 +145,9 @@ Full setup: [docs/PRODUCTION.md](docs/PRODUCTION.md#local-development).
 | Skills | `GET /api/v1/skills` |
 | Experiences | `GET /api/v1/experiences` |
 | Site settings | `GET /api/v1/site-settings` |
+| Blog | `GET /api/v1/blog-posts`, `GET /api/v1/blog-posts/:slug` |
+| Pricing | `GET /api/v1/pricing` |
+| Navigation | `GET /api/v1/navigation?scope=HEADER\|FOOTER` |
 | Contact | `POST /api/v1/contact` (rate limited: 5/min) |
 
 ### Admin (JWT + permissions)
@@ -156,6 +159,9 @@ Full setup: [docs/PRODUCTION.md](docs/PRODUCTION.md#local-development).
 | Experiences | `CRUD /api/v1/admin/experiences` | `EXPERIENCE_*` |
 | Site settings | `GET/PATCH /api/v1/admin/site-settings` | `SITE_SETTING_*` |
 | Contact inbox | `GET/PATCH/DELETE /api/v1/admin/contact-messages` | `CONTACT_*` |
+| Blog | `CRUD /api/v1/admin/blog-posts` | `BLOG_*` |
+| Pricing | `CRUD /api/v1/admin/pricing/plans`, feature rows | `PRICING_*` |
+| Navigation | `CRUD /api/v1/admin/navigation` + reorder | `NAV_*` |
 | Audit logs | `GET /api/v1/admin/audit-logs` | `AUDIT_READ` |
 | Media upload | `POST /api/v1/admin/media/upload` | `PROJECT_UPDATE` (optional S3) |
 
@@ -278,12 +284,13 @@ Base admin-only stack (no portfolio):
 
 | Version | Highlights |
 |---------|------------|
-| **[v2.2.0](https://github.com/devTugu/nestjs-fsd-portfolio-template/releases/tag/v2.2.0)** (current) | Regulated enterprise: Railway deploy, audit retention, GDPR tests, OIDC/MFA, checklist v2.2 |
+| **[v2.3.0](https://github.com/devTugu/nestjs-fsd-portfolio-template/releases/tag/v2.3.0)** (current) | Blog + Pricing + Navigation CMS, localized content (ADR 012), CI coverage gate |
+| [v2.2.0](https://github.com/devTugu/nestjs-fsd-portfolio-template/releases/tag/v2.2.0) | Regulated enterprise: Railway deploy, audit retention, GDPR tests, OIDC/MFA |
 | [v1.0.0](https://github.com/devTugu/nestjs-fsd-portfolio-template/releases/tag/v1.0.0) | Initial Portfolio CMS API |
 
-Pair with [nextjs-fsd-portfolio-template](https://github.com/devTugu/nextjs-fsd-portfolio-template) **v2.2.0** for full-stack.
+Pair with [nextjs-fsd-portfolio-template](https://github.com/devTugu/nextjs-fsd-portfolio-template) **v2.3.0** for full-stack.
 
-**v2.3 roadmap:** full GDPR cross-entity export, full app i18n, live Helm deploy.
+**v2.4 roadmap:** full GDPR cross-entity export, live Helm deploy.
 
 ---
 
@@ -306,7 +313,6 @@ Pair with [nextjs-fsd-portfolio-template](https://github.com/devTugu/nextjs-fsd-
 | [contracts/api-envelope.md](docs/contracts/api-envelope.md) | Shared API shape | Yes |
 | [adr/*.md](docs/adr/) | Architecture decisions | Yes |
 | [articles/full-stack-portfolio-starter-devto.md](docs/articles/full-stack-portfolio-starter-devto.md) | dev.to draft | Optional |
-| [articles/full-stack-rbac-starter-devto.md](docs/articles/full-stack-rbac-starter-devto.md) | Base template article (wrong repo) | Remove or move to `nestjs-fsd-template` |
 
 ---
 

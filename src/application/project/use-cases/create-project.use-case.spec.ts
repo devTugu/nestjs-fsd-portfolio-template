@@ -1,4 +1,5 @@
 import { CreateProjectUseCase } from './create-project.use-case';
+import { localizedText } from '@shared/domain/localized-content';
 
 describe('CreateProjectUseCase', () => {
   const projects = {
@@ -13,9 +14,9 @@ describe('CreateProjectUseCase', () => {
     projects.create.mockResolvedValue({
       id: 1,
       slug: 'my-app',
-      title: 'My App',
-      shortDescription: 'Short',
-      description: 'Long',
+      title: localizedText('My App', 'My App'),
+      shortDescription: localizedText('Short', 'Short'),
+      description: localizedText('Long', 'Long'),
       thumbnailUrl: null,
       images: [],
       techStack: ['NestJS'],
@@ -30,9 +31,9 @@ describe('CreateProjectUseCase', () => {
     });
 
     const result = await useCase.execute({
-      title: 'My App',
-      shortDescription: 'Short',
-      description: 'Long',
+      title: localizedText('My App', 'My App'),
+      shortDescription: localizedText('Short', 'Short'),
+      description: localizedText('Long', 'Long'),
       techStack: ['NestJS'],
     });
 

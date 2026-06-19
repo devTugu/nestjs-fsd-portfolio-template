@@ -1,11 +1,12 @@
 import { Project, ProjectImage } from '@domain/project/entities/project.entity';
+import type { LocalizedText } from '@shared/domain/localized-content';
 
 export interface ProjectOutput {
   id: number;
   slug: string;
-  title: string;
-  shortDescription: string;
-  description: string;
+  title: LocalizedText;
+  shortDescription: LocalizedText;
+  description: LocalizedText;
   thumbnailUrl: string | null;
   images: ProjectImage[];
   techStack: string[];

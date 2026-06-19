@@ -8,8 +8,10 @@ import {
   Max,
   MaxLength,
   Min,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { LocalizedTextDto } from '../shared/localized-text.dto';
 
 export class CreateExperienceDto {
   @ApiProperty()
@@ -18,19 +20,21 @@ export class CreateExperienceDto {
   company: string;
 
   @ApiProperty()
-  @IsString()
-  @MaxLength(200)
-  role: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  role: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  location?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  location?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  description?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  description?: LocalizedTextDto;
 
   @ApiProperty({ example: '2022-01-01' })
   @IsDateString()
@@ -65,18 +69,21 @@ export class UpdateExperienceDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  role?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  role?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  location?: string | null;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  location?: LocalizedTextDto | null;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  description?: string | null;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  description?: LocalizedTextDto | null;
 
   @ApiPropertyOptional()
   @IsOptional()

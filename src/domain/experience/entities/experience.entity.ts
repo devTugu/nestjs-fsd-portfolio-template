@@ -1,10 +1,12 @@
+import type { LocalizedText } from '@shared/domain/localized-content';
+
 export class Experience {
   constructor(
     public readonly id: number,
     public readonly company: string,
-    public readonly role: string,
-    public readonly location: string | null,
-    public readonly description: string | null,
+    public readonly role: LocalizedText,
+    public readonly location: LocalizedText | null,
+    public readonly description: LocalizedText | null,
     public readonly startDate: Date,
     public readonly endDate: Date | null,
     public readonly isCurrent: boolean,

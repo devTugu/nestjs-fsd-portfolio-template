@@ -1,11 +1,12 @@
 import { Experience } from '@domain/experience/entities/experience.entity';
+import type { LocalizedText } from '@shared/domain/localized-content';
 
 export interface ExperienceOutput {
   id: number;
   company: string;
-  role: string;
-  location: string | null;
-  description: string | null;
+  role: LocalizedText;
+  location: LocalizedText | null;
+  description: LocalizedText | null;
   startDate: string;
   endDate: string | null;
   isCurrent: boolean;

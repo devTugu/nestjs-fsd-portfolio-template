@@ -136,6 +136,20 @@ describe('Portfolio API (e2e)', () => {
       .expect(200);
   });
 
+  it('GET /api/v1/blog-posts returns 200 without token', () => {
+    return request(app.getHttpServer()).get('/api/v1/blog-posts').expect(200);
+  });
+
+  it('GET /api/v1/pricing returns 200 without token', () => {
+    return request(app.getHttpServer()).get('/api/v1/pricing').expect(200);
+  });
+
+  it('GET /api/v1/navigation returns 200 without token', () => {
+    return request(app.getHttpServer())
+      .get('/api/v1/navigation?scope=HEADER')
+      .expect(200);
+  });
+
   it('POST /api/v1/contact creates message', () => {
     return request(app.getHttpServer())
       .post('/api/v1/contact')
@@ -164,10 +178,35 @@ describe('Portfolio API (e2e)', () => {
       .post('/api/v1/admin/projects')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        title: 'E2E Test Project',
-        shortDescription: 'Short desc',
-        description: 'Long description for e2e',
+        title: { en: 'E2E Test Project', mn: 'E2E Test Project' },
+        shortDescription: { en: 'Short desc', mn: 'Short desc' },
+        description: {
+          en: 'Long description for e2e',
+          mn: 'Long description for e2e',
+        },
         techStack: ['NestJS'],
+        isPublished: false,
+      })
+      .expect(201);
+
+    const body = response.body.data ?? response.body;
+    expect(body.slug).toBeDefined();
+  });
+
+  it('POST /api/v1/admin/blog-posts creates blog post for admin', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/api/v1/admin/blog-posts')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        title: { en: 'E2E Blog Post', mn: 'E2E Blog Post' },
+        excerpt: { en: 'Short excerpt for e2e', mn: 'Short excerpt for e2e' },
+        content: {
+          en: 'Long content body for e2e blog post test',
+          mn: 'Long content body for e2e blog post test',
+        },
+        category: 'PRODUCT',
+        authorName: { en: 'E2E Author', mn: 'E2E Author' },
+        authorRole: { en: 'Tester', mn: 'Tester' },
         isPublished: false,
       })
       .expect(201);

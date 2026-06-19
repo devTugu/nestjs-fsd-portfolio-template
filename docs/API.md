@@ -64,6 +64,8 @@ Roles in `MFA_REQUIRED_ROLES` (default `SUPER_ADMIN`) must enroll MFA before rec
 
 ## Portfolio — Public
 
+CMS human-readable fields return **LocalizedText** `{ en, mn }` or **LocalizedStringList** `{ en: string[], mn: string[] }`. The frontend resolves locale via cookie (`pickLocalized`). Slugs remain single canonical strings (from `title.en`). See [ADR 012](./adr/012-cms-localized-content.md).
+
 ### Projects
 
 | Method | Path | Query | Description |
@@ -89,7 +91,43 @@ Roles in `MFA_REQUIRED_ROLES` (default `SUPER_ADMIN`) must enroll MFA before rec
 |--------|------|-------------|
 | GET | `/site-settings` | Singleton: hero, header, footer, seo, contactInfo |
 
-Returns defaults when no row exists yet.
+Returns defaults when no row exists yet. Human-readable CMS strings use **LocalizedText** `{ en, mn }` (see [ADR 012](./adr/012-cms-localized-content.md)). Example hero field:
+
+```json
+{
+  "hero": {
+    "title": { "en": "Hi, I am a Developer", "mn": "Сайн байна уу, би хөгжүүлэгч" },
+    "ctaUrl": "/projects"
+  }
+}
+```
+
+`header.navLinks` removed — use Navigation CMS instead.
+
+### Navigation
+
+| Method | Path | Query | Description |
+|--------|------|-------|-------------|
+| GET | `/navigation` | `scope=HEADER\|FOOTER` | Published navigation tree `{ tree: NavigationNodeTree[] }` |
+
+Nodes include localized `labels: { en, mn }`, optional `descriptions`, and nested `children`. Unpublished nodes and empty parent branches are omitted.
+
+### Blog posts
+
+| Method | Path | Query | Description |
+|--------|------|-------|-------------|
+| GET | `/blog-posts` | `category`, `page`, `limit` | Published blog posts (paginated) |
+| GET | `/blog-posts/:slug` | — | Single published post; 404 if draft or missing |
+
+Categories: `PRODUCT`, `ENGINEERING`, `CORPORATE`, `INDUSTRY`. Human-readable fields use **LocalizedText** (ADR 012).
+
+### Pricing
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/pricing` | Published plans + feature comparison matrix |
+
+Returns `{ plans: PricingPlanOutput[], featureRows: PricingFeatureRowOutput[] }`.
 
 ### Contact
 
@@ -181,6 +219,52 @@ Partial update — only sent JSON sections are merged.
 
 **Status values:** `NEW`, `READ`, `ARCHIVED`
 
+### Navigation
+
+| Method | Path | Permission |
+|--------|------|------------|
+| GET | `/admin/navigation` | `NAV_READ` |
+| POST | `/admin/navigation/nodes` | `NAV_CREATE` |
+| PATCH | `/admin/navigation/nodes/:id` | `NAV_UPDATE` |
+| DELETE | `/admin/navigation/nodes/:id` | `NAV_DELETE` |
+| PUT | `/admin/navigation/reorder` | `NAV_UPDATE` |
+
+Query `scope=HEADER|FOOTER` on list. Reorder body: `{ scope, items: [{ id, parentId, sortOrder }] }`.
+
+### Blog posts
+
+| Method | Path | Permission |
+|--------|------|------------|
+| GET | `/admin/blog-posts` | `BLOG_READ` |
+| POST | `/admin/blog-posts` | `BLOG_CREATE` |
+| GET | `/admin/blog-posts/:id` | `BLOG_READ` |
+| PATCH | `/admin/blog-posts/:id` | `BLOG_UPDATE` |
+| DELETE | `/admin/blog-posts/:id` | `BLOG_DELETE` |
+
+**Create body (required):** `title`, `excerpt`, `content`, `category`, `authorName`, `authorRole` (all localized except `category`).
+
+Optional: `slug`, `coverImageUrl`, `isPublished`, `sortOrder`. Slug auto-generated from `title.en` when omitted.
+
+### Pricing plans
+
+| Method | Path | Permission |
+|--------|------|------------|
+| GET | `/admin/pricing/plans` | `PRICING_READ` |
+| POST | `/admin/pricing/plans` | `PRICING_CREATE` |
+| GET | `/admin/pricing/plans/:id` | `PRICING_READ` |
+| PATCH | `/admin/pricing/plans/:id` | `PRICING_UPDATE` |
+| DELETE | `/admin/pricing/plans/:id` | `PRICING_DELETE` |
+
+### Pricing feature rows
+
+| Method | Path | Permission |
+|--------|------|------------|
+| GET | `/admin/pricing/feature-rows` | `PRICING_READ` |
+| POST | `/admin/pricing/feature-rows` | `PRICING_CREATE` |
+| GET | `/admin/pricing/feature-rows/:id` | `PRICING_READ` |
+| PATCH | `/admin/pricing/feature-rows/:id` | `PRICING_UPDATE` |
+| DELETE | `/admin/pricing/feature-rows/:id` | `PRICING_DELETE` |
+
 ### Media upload (optional)
 
 | Method | Path | Permission |
@@ -224,6 +308,9 @@ SKILL_READ, SKILL_CREATE, SKILL_UPDATE, SKILL_DELETE
 EXPERIENCE_READ, EXPERIENCE_CREATE, EXPERIENCE_UPDATE, EXPERIENCE_DELETE
 SITE_SETTING_READ, SITE_SETTING_UPDATE
 CONTACT_READ, CONTACT_UPDATE, CONTACT_DELETE
+BLOG_READ, BLOG_CREATE, BLOG_UPDATE, BLOG_DELETE
+PRICING_READ, PRICING_CREATE, PRICING_UPDATE, PRICING_DELETE
+NAV_READ, NAV_CREATE, NAV_UPDATE, NAV_DELETE
 ```
 
 `SUPER_ADMIN` receives all permissions. `CONTENT_MANAGER` receives portfolio permissions only.

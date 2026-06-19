@@ -8,6 +8,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import type { LocalizedText } from '@shared/domain/localized-content';
+
 @Entity({ name: 'skills' })
 export class SkillEntity {
   @PrimaryGeneratedColumn()
@@ -16,8 +18,8 @@ export class SkillEntity {
   @Column({ length: 100 })
   name: string;
 
-  @Column({ length: 50 })
-  category: string;
+  @Column({ type: 'json' })
+  category: LocalizedText;
 
   @Column({ type: 'tinyint', default: 3 })
   proficiency: number;

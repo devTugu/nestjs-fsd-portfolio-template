@@ -38,16 +38,44 @@ jobs:
           severity: CRITICAL,HIGH
           exit-code: '1'
 
+      - name: Checkout frontend (paired tag)
+        uses: actions/checkout@v4
+        with:
+          repository: devTugu/nextjs-fsd-portfolio-template
+          ref: ${{ github.ref_name }}
+          path: frontend
+
+      - name: Build Admin image
+        uses: docker/build-push-action@v6
+        with:
+          context: frontend
+          push: true
+          tags: ghcr.io/devTugu/nextjs-fsd-portfolio-template/portfolio-admin:${{ github.ref_name }}
+
+      - name: Trivy scan Admin image
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          image-ref: ghcr.io/devTugu/nextjs-fsd-portfolio-template/portfolio-admin:${{ github.ref_name }}
+          severity: CRITICAL,HIGH
+          exit-code: '1'
+
       - name: Setup Helm
         uses: azure/setup-helm@v4
 
-      - name: Helm lint
-        run: helm lint deploy/helm/portfolio-stack
+      - name: Helm lint and template
+        run: |
+          helm lint deploy/helm/portfolio-stack
+          helm template portfolio-test deploy/helm/portfolio-stack \
+            --set api.enabled=true \
+            --set frontend.enabled=true \
+            --set api.image.tag=${{ github.ref_name }} \
+            --set frontend.image.tag=${{ github.ref_name }} > /dev/null
 
-      - name: Deploy staging
+      - name: Deploy staging (dry-run)
         if: startsWith(github.ref_name, 'v')
         run: |
           helm upgrade --install portfolio-staging deploy/helm/portfolio-stack \
             --namespace portfolio-staging --create-namespace \
             --set api.image.tag=${{ github.ref_name }} \
+            --set frontend.image.tag=${{ github.ref_name }} \
             --dry-run

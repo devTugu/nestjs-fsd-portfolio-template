@@ -3,6 +3,7 @@ import { ISkillRepository } from '@domain/skill/repositories/skill.repository.in
 import { AppErrors } from '@application/exceptions/application.exception';
 import { SkillOutput, toSkillOutput } from '../dto/skill-output.mapper';
 import { SKILL_REPOSITORY } from '@shared/constants/tokens';
+import type { LocalizedText } from '@shared/domain/localized-content';
 
 @Injectable()
 export class CreateSkillUseCase {
@@ -12,7 +13,7 @@ export class CreateSkillUseCase {
 
   async execute(input: {
     name: string;
-    category: string;
+    category: LocalizedText;
     proficiency: number;
     icon?: string | null;
     isPublished?: boolean;
@@ -21,7 +22,7 @@ export class CreateSkillUseCase {
     if (input.proficiency < 1 || input.proficiency > 5) {
       throw AppErrors.BAD_REQUEST('Proficiency must be between 1 and 5.');
     }
-    if (await this.skills.nameCategoryExists(input.name, input.category)) {
+    if (await this.skills.nameCategoryExists(input.name, input.category.en)) {
       throw AppErrors.CONFLICT(
         'Skill with this name and category already exists.',
       );
@@ -41,7 +42,7 @@ export class UpdateSkillUseCase {
     id: number,
     input: {
       name?: string;
-      category?: string;
+      category?: LocalizedText;
       proficiency?: number;
       icon?: string | null;
       isPublished?: boolean;
@@ -59,8 +60,8 @@ export class UpdateSkillUseCase {
     const category = input.category ?? existing.category;
     if (
       (input.name !== undefined || input.category !== undefined) &&
-      (name !== existing.name || category !== existing.category) &&
-      (await this.skills.nameCategoryExists(name, category, id))
+      (name !== existing.name || category.en !== existing.category.en) &&
+      (await this.skills.nameCategoryExists(name, category.en, id))
     ) {
       throw AppErrors.CONFLICT(
         'Skill with this name and category already exists.',

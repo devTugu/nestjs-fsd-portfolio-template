@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { LocalizedText } from '@shared/domain/localized-content';
 
 @Entity({ name: 'experiences' })
 export class ExperienceEntity {
@@ -16,14 +17,14 @@ export class ExperienceEntity {
   @Column({ length: 200 })
   company: string;
 
-  @Column({ length: 200 })
-  role: string;
+  @Column({ type: 'json' })
+  role: LocalizedText;
 
-  @Column({ type: 'varchar', length: 200, nullable: true })
-  location: string | null;
+  @Column({ type: 'json', nullable: true })
+  location: LocalizedText | null;
 
-  @Column({ type: 'text', nullable: true })
-  description: string | null;
+  @Column({ type: 'json', nullable: true })
+  description: LocalizedText | null;
 
   @Column({ name: 'start_date', type: 'date' })
   startDate: Date;

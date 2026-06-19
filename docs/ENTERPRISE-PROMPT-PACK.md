@@ -60,7 +60,7 @@ See [COMPLIANCE.md](COMPLIANCE.md) for SOC2 mapping.
 18. Dependabot
 19. Test pyramid (unit + e2e)
 20. E2E on PRs
-21. i18n scaffold
+21. i18n scaffold + CMS LocalizedText (ADR 012)
 22. GDPR export/erasure
 23. Runbook
 24. SOC2 compliance doc
@@ -77,3 +77,4 @@ See [COMPLIANCE.md](COMPLIANCE.md) for SOC2 mapping.
 | `deploy/helm/portfolio-stack/values.yaml` | Host, replicas, images |
 | `.env.example` | Domain URLs, secrets template |
 | `docs/adr/005-portfolio-cms.md` | Add/remove CMS modules |
+| `docs/adr/012-cms-localized-content.md` | LocalizedText for new CMS entities |

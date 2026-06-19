@@ -33,6 +33,8 @@ frontend:
 
 mysql:
   enabled: true
+  host: mysql
+  port: 3306
   auth:
     database: app_db
     username: app_user
@@ -40,6 +42,7 @@ mysql:
 
 redis:
   enabled: true
+  host: redis
 
 ingress:
   enabled: true

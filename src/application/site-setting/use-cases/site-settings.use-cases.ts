@@ -7,6 +7,24 @@ import {
 } from '../dto/site-settings-output.mapper';
 import { SITE_SETTING_REPOSITORY } from '@shared/constants/tokens';
 
+function defaultSettingsOutput(): SiteSettingsOutput {
+  return {
+    id: DEFAULT_SITE_SETTINGS.id,
+    hero: { ...DEFAULT_SITE_SETTINGS.hero },
+    header: { ...DEFAULT_SITE_SETTINGS.header },
+    footer: {
+      ...DEFAULT_SITE_SETTINGS.footer,
+      socialLinks: [...DEFAULT_SITE_SETTINGS.footer.socialLinks],
+    },
+    seo: {
+      ...DEFAULT_SITE_SETTINGS.seo,
+      keywords: { ...DEFAULT_SITE_SETTINGS.seo.keywords },
+    },
+    contactInfo: { ...DEFAULT_SITE_SETTINGS.contactInfo },
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 @Injectable()
 export class GetPublicSiteSettingsUseCase {
   constructor(
@@ -17,24 +35,7 @@ export class GetPublicSiteSettingsUseCase {
   async execute(): Promise<SiteSettingsOutput> {
     const settings = await this.siteSettings.get();
     if (!settings) {
-      return {
-        id: DEFAULT_SITE_SETTINGS.id,
-        hero: { ...DEFAULT_SITE_SETTINGS.hero },
-        header: {
-          ...DEFAULT_SITE_SETTINGS.header,
-          navLinks: [...DEFAULT_SITE_SETTINGS.header.navLinks],
-        },
-        footer: {
-          ...DEFAULT_SITE_SETTINGS.footer,
-          socialLinks: [...DEFAULT_SITE_SETTINGS.footer.socialLinks],
-        },
-        seo: {
-          ...DEFAULT_SITE_SETTINGS.seo,
-          keywords: [...DEFAULT_SITE_SETTINGS.seo.keywords],
-        },
-        contactInfo: { ...DEFAULT_SITE_SETTINGS.contactInfo },
-        updatedAt: new Date().toISOString(),
-      };
+      return defaultSettingsOutput();
     }
     return toSiteSettingsOutput(settings);
   }
@@ -50,24 +51,7 @@ export class GetSiteSettingsUseCase {
   async execute(): Promise<SiteSettingsOutput> {
     const settings = await this.siteSettings.get();
     if (!settings) {
-      return {
-        id: DEFAULT_SITE_SETTINGS.id,
-        hero: { ...DEFAULT_SITE_SETTINGS.hero },
-        header: {
-          ...DEFAULT_SITE_SETTINGS.header,
-          navLinks: [...DEFAULT_SITE_SETTINGS.header.navLinks],
-        },
-        footer: {
-          ...DEFAULT_SITE_SETTINGS.footer,
-          socialLinks: [...DEFAULT_SITE_SETTINGS.footer.socialLinks],
-        },
-        seo: {
-          ...DEFAULT_SITE_SETTINGS.seo,
-          keywords: [...DEFAULT_SITE_SETTINGS.seo.keywords],
-        },
-        contactInfo: { ...DEFAULT_SITE_SETTINGS.contactInfo },
-        updatedAt: new Date().toISOString(),
-      };
+      return defaultSettingsOutput();
     }
     return toSiteSettingsOutput(settings);
   }

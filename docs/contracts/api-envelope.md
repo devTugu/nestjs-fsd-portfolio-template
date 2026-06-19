@@ -80,7 +80,7 @@ When adding a permission:
 
 ### Portfolio permissions
 
-`PROJECT_*`, `SKILL_*`, `EXPERIENCE_*`, `SITE_SETTING_*`, `CONTACT_*`
+`PROJECT_*`, `SKILL_*`, `EXPERIENCE_*`, `SITE_SETTING_*`, `CONTACT_*`, `NAV_*`
 
 ## Auth headers
 

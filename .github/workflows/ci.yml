@@ -95,5 +95,15 @@ jobs:
 
       - run: npm run test:e2e
 
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Helm lint and template
+        run: |
+          helm lint deploy/helm/portfolio-stack
+          helm template portfolio-test deploy/helm/portfolio-stack \
+            --set api.enabled=true \
+            --set frontend.enabled=true > /dev/null
+
       - name: Security audit
         run: npm audit --audit-level=high

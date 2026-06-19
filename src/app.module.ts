@@ -29,6 +29,9 @@ import { ContactPresentationModule } from '@presentation/http/modules/contact.pr
 import { MediaPresentationModule } from '@presentation/http/modules/media.presentation.module';
 import { DashboardPresentationModule } from '@presentation/http/modules/dashboard.presentation.module';
 import { AuditPresentationModule } from '@presentation/http/modules/audit.presentation.module';
+import { BlogPresentationModule } from '@presentation/http/modules/blog.presentation.module';
+import { PricingPresentationModule } from '@presentation/http/modules/pricing.presentation.module';
+import { NavigationPresentationModule } from '@presentation/http/modules/navigation.presentation.module';
 
 @Module({
   imports: [
@@ -80,6 +83,9 @@ import { AuditPresentationModule } from '@presentation/http/modules/audit.presen
     MediaPresentationModule,
     DashboardPresentationModule,
     AuditPresentationModule,
+    BlogPresentationModule,
+    PricingPresentationModule,
+    NavigationPresentationModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionsFilter },

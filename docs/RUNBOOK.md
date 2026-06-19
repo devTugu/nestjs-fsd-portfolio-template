@@ -28,6 +28,22 @@
 3. Rolling restart API deployment
 4. Force user re-login (refresh tokens invalidated on secret change if configured)
 
+## Helm deploy (staging / production)
+
+1. Build and push tagged images (`portfolio-api`, `portfolio-admin`) — see CD workflow
+2. Lint chart: `helm lint deploy/helm/portfolio-stack`
+3. Install or upgrade:
+   ```bash
+   helm upgrade --install portfolio-staging deploy/helm/portfolio-stack \
+     --namespace portfolio-staging --create-namespace \
+     --set api.image.tag=vX.Y.Z \
+     --set frontend.image.tag=vX.Y.Z
+   ```
+4. Verify probes: API `/api/v1/health/ready`, frontend `/api/health`
+5. Roll back on failure: `helm rollback portfolio-staging <revision>`
+
+See [deploy/helm/README.md](../deploy/helm/README.md).
+
 ## Contacts
 
 - On-call: configure in your org

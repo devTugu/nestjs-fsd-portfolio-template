@@ -15,6 +15,10 @@ import {
   ExperienceEntity,
   SiteSettingEntity,
   ContactMessageEntity,
+  BlogPostEntity,
+  PricingPlanEntity,
+  PricingFeatureRowEntity,
+  NavigationNodeEntity,
 } from './database/typeorm/entities';
 import {
   USER_REPOSITORY,
@@ -31,6 +35,10 @@ import {
   EXPERIENCE_REPOSITORY,
   SITE_SETTING_REPOSITORY,
   CONTACT_MESSAGE_REPOSITORY,
+  BLOG_POST_REPOSITORY,
+  PRICING_PLAN_REPOSITORY,
+  PRICING_FEATURE_ROW_REPOSITORY,
+  NAVIGATION_NODE_REPOSITORY,
   NOTIFICATION_PORT,
   MEDIA_STORAGE_PORT,
   MFA_VERIFIER,
@@ -46,6 +54,10 @@ import { SkillTypeOrmRepository } from './repositories/skill.typeorm-repository'
 import { ExperienceTypeOrmRepository } from './repositories/experience.typeorm-repository';
 import { SiteSettingTypeOrmRepository } from './repositories/site-setting.typeorm-repository';
 import { ContactMessageTypeOrmRepository } from './repositories/contact-message.typeorm-repository';
+import { BlogPostTypeOrmRepository } from './repositories/blog-post.typeorm-repository';
+import { PricingPlanTypeOrmRepository } from './repositories/pricing-plan.typeorm-repository';
+import { PricingFeatureRowTypeOrmRepository } from './repositories/pricing-feature-row.typeorm-repository';
+import { NavigationNodeTypeOrmRepository } from './repositories/navigation-node.typeorm-repository';
 import { BcryptPasswordHasher } from './auth/bcrypt-password-hasher';
 import { JwtTokenIssuerAdapter } from './auth/jwt-token-issuer.adapter';
 import { RedisClient } from './cache/redis/redis.client';
@@ -89,6 +101,10 @@ import { OidcIdentityAdapter } from './auth/oidc-identity.adapter';
       ExperienceEntity,
       SiteSettingEntity,
       ContactMessageEntity,
+      BlogPostEntity,
+      PricingPlanEntity,
+      PricingFeatureRowEntity,
+      NavigationNodeEntity,
     ]),
   ],
   providers: [
@@ -119,6 +135,19 @@ import { OidcIdentityAdapter } from './auth/oidc-identity.adapter';
     {
       provide: CONTACT_MESSAGE_REPOSITORY,
       useClass: ContactMessageTypeOrmRepository,
+    },
+    { provide: BLOG_POST_REPOSITORY, useClass: BlogPostTypeOrmRepository },
+    {
+      provide: PRICING_PLAN_REPOSITORY,
+      useClass: PricingPlanTypeOrmRepository,
+    },
+    {
+      provide: PRICING_FEATURE_ROW_REPOSITORY,
+      useClass: PricingFeatureRowTypeOrmRepository,
+    },
+    {
+      provide: NAVIGATION_NODE_REPOSITORY,
+      useClass: NavigationNodeTypeOrmRepository,
     },
     { provide: PASSWORD_HASHER, useClass: BcryptPasswordHasher },
     { provide: TOKEN_ISSUER, useClass: JwtTokenIssuerAdapter },
@@ -191,6 +220,10 @@ import { OidcIdentityAdapter } from './auth/oidc-identity.adapter';
     EXPERIENCE_REPOSITORY,
     SITE_SETTING_REPOSITORY,
     CONTACT_MESSAGE_REPOSITORY,
+    BLOG_POST_REPOSITORY,
+    PRICING_PLAN_REPOSITORY,
+    PRICING_FEATURE_ROW_REPOSITORY,
+    NAVIGATION_NODE_REPOSITORY,
     PASSWORD_HASHER,
     TOKEN_ISSUER,
     TOKEN_BLACKLIST,

@@ -9,10 +9,13 @@ import {
   Max,
   MaxLength,
   Min,
-  MinLength,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  LocalizedContentDto,
+  LocalizedTextDto,
+} from '../shared/localized-text.dto';
 
 export class ProjectImageDto {
   @ApiProperty()
@@ -21,16 +24,16 @@ export class ProjectImageDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  alt?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  alt?: LocalizedTextDto;
 }
 
 export class CreateProjectDto {
   @ApiProperty()
-  @IsString()
-  @MinLength(2)
-  @MaxLength(200)
-  title: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  title: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -39,13 +42,14 @@ export class CreateProjectDto {
   slug?: string;
 
   @ApiProperty()
-  @IsString()
-  @MaxLength(500)
-  shortDescription: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  shortDescription: LocalizedTextDto;
 
   @ApiProperty()
-  @IsString()
-  description: string;
+  @ValidateNested()
+  @Type(() => LocalizedContentDto)
+  description: LocalizedContentDto;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -93,10 +97,9 @@ export class CreateProjectDto {
 export class UpdateProjectDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  @MinLength(2)
-  @MaxLength(200)
-  title?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  title?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -106,14 +109,15 @@ export class UpdateProjectDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  @MaxLength(500)
-  shortDescription?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  shortDescription?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  description?: string;
+  @ValidateNested()
+  @Type(() => LocalizedContentDto)
+  description?: LocalizedContentDto;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -182,23 +186,28 @@ export class ListProjectsQueryDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @Type(() => Boolean)
   @IsBoolean()
   featured?: boolean;
 }
 
 export class ListPublicProjectsQueryDto {
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ default: 1 })
   @IsOptional()
-  @Type(() => Boolean)
-  @IsBoolean()
-  featured?: boolean;
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number = 1;
 
-  @ApiPropertyOptional({ default: 100 })
+  @ApiPropertyOptional({ default: 20 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
   @Max(100)
-  limit?: number = 100;
+  limit?: number = 20;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  featured?: boolean;
 }

@@ -54,7 +54,7 @@ One row with JSON columns: `hero`, `header`, `footer`, `seo`, `contact_info`. De
 
 ### RBAC extension
 
-17 new permission codes + `CONTENT_MANAGER` role with portfolio permissions only.
+29 portfolio CMS permission codes (projects, skills, experiences, site settings, contact, blog, pricing, navigation) + `CONTENT_MANAGER` role with portfolio permissions only. Blog and pricing use **LocalizedText** per [ADR 012](./012-cms-localized-content.md). Navigation tree per [ADR 011](./011-navigation-tree-cms.md). Public marketing expansion per [ADR 013](./013-blog-pricing-public-site.md).
 
 ## Consequences
 

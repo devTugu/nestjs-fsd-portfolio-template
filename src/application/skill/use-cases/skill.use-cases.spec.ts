@@ -1,4 +1,5 @@
 import { CreateSkillUseCase } from './skill.use-cases';
+import { localizedText } from '@shared/domain/localized-content';
 
 describe('CreateSkillUseCase', () => {
   const skills = {
@@ -12,7 +13,7 @@ describe('CreateSkillUseCase', () => {
     skills.create.mockResolvedValue({
       id: 1,
       name: 'TypeScript',
-      category: 'frontend',
+      category: localizedText('frontend', 'frontend'),
       proficiency: 5,
       icon: null,
       isPublished: true,
@@ -23,7 +24,7 @@ describe('CreateSkillUseCase', () => {
 
     const result = await useCase.execute({
       name: 'TypeScript',
-      category: 'frontend',
+      category: localizedText('frontend', 'frontend'),
       proficiency: 5,
     });
 
@@ -34,7 +35,7 @@ describe('CreateSkillUseCase', () => {
     await expect(
       useCase.execute({
         name: 'X',
-        category: 'frontend',
+        category: localizedText('frontend', 'frontend'),
         proficiency: 6,
       }),
     ).rejects.toMatchObject({ code: 'BAD_REQUEST' });

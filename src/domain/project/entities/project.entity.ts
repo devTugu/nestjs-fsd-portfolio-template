@@ -1,15 +1,17 @@
+import type { LocalizedText } from '@shared/domain/localized-content';
+
 export interface ProjectImage {
   url: string;
-  alt?: string;
+  alt?: LocalizedText;
 }
 
 export class Project {
   constructor(
     public readonly id: number,
     public readonly slug: string,
-    public readonly title: string,
-    public readonly shortDescription: string,
-    public readonly description: string,
+    public readonly title: LocalizedText,
+    public readonly shortDescription: LocalizedText,
+    public readonly description: LocalizedText,
     public readonly thumbnailUrl: string | null,
     public readonly images: ProjectImage[],
     public readonly techStack: string[],

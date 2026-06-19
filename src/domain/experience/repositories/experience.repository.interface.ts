@@ -1,11 +1,12 @@
 import { Experience } from '../entities/experience.entity';
+import type { LocalizedText } from '@shared/domain/localized-content';
 import { PaginatedResult } from '@shared/types/pagination';
 
 export interface CreateExperienceData {
   company: string;
-  role: string;
-  location?: string | null;
-  description?: string | null;
+  role: LocalizedText;
+  location?: LocalizedText | null;
+  description?: LocalizedText | null;
   startDate: Date;
   endDate?: Date | null;
   isCurrent?: boolean;
@@ -15,9 +16,9 @@ export interface CreateExperienceData {
 
 export interface UpdateExperienceData {
   company?: string;
-  role?: string;
-  location?: string | null;
-  description?: string | null;
+  role?: LocalizedText;
+  location?: LocalizedText | null;
+  description?: LocalizedText | null;
   startDate?: Date;
   endDate?: Date | null;
   isCurrent?: boolean;

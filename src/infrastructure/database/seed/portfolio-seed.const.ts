@@ -1,10 +1,22 @@
+import {
+  localizedText,
+  localizedStringList,
+} from '@shared/domain/localized-content';
+
+const L = localizedText;
+
 export const DEMO_PROJECTS = [
   {
     slug: 'portfolio-cms',
-    title: 'Portfolio CMS',
-    shortDescription: 'Full-stack portfolio with admin CMS',
-    description:
+    title: L('Portfolio CMS', 'Портфолио CMS'),
+    shortDescription: L(
+      'Full-stack portfolio with admin CMS',
+      'Admin CMS-тай full-stack портфолио',
+    ),
+    description: L(
       'A production-ready portfolio template built with NestJS and Next.js featuring RBAC admin panel.',
+      'RBAC admin panel-тай NestJS болон Next.js-ээр бүтээгдсэн production-ready портфолио template.',
+    ),
     thumbnailUrl: null,
     images: [],
     techStack: ['NestJS', 'Next.js', 'TypeORM', 'MySQL'],
@@ -16,9 +28,15 @@ export const DEMO_PROJECTS = [
   },
   {
     slug: 'ecommerce-api',
-    title: 'E-Commerce API',
-    shortDescription: 'REST API for online store',
-    description: 'Scalable e-commerce backend with payment integration.',
+    title: L('E-Commerce API', 'E-Commerce API'),
+    shortDescription: L(
+      'REST API for online store',
+      'Онлайн дэлгүүрийн REST API',
+    ),
+    description: L(
+      'Scalable e-commerce backend with payment integration.',
+      'Төлбөрийн интеграцтай масштаблагдах e-commerce backend.',
+    ),
     thumbnailUrl: null,
     images: [],
     techStack: ['NestJS', 'PostgreSQL', 'Stripe'],
@@ -30,9 +48,15 @@ export const DEMO_PROJECTS = [
   },
   {
     slug: 'task-manager',
-    title: 'Task Manager',
-    shortDescription: 'Team task management app',
-    description: 'Collaborative task board with real-time updates.',
+    title: L('Task Manager', 'Даалгавар менежер'),
+    shortDescription: L(
+      'Team task management app',
+      'Багийн даалгавар удирдах апп',
+    ),
+    description: L(
+      'Collaborative task board with real-time updates.',
+      'Real-time шинэчлэлттэй хамтын даалгаврын самбар.',
+    ),
     thumbnailUrl: null,
     images: [],
     techStack: ['React', 'Node.js', 'Socket.io'],
@@ -47,62 +71,71 @@ export const DEMO_PROJECTS = [
 export const DEMO_SKILLS = [
   {
     name: 'TypeScript',
-    category: 'frontend',
+    category: L('frontend', 'frontend'),
     proficiency: 5,
     icon: 'typescript',
     sortOrder: 0,
   },
   {
     name: 'React',
-    category: 'frontend',
+    category: L('frontend', 'frontend'),
     proficiency: 5,
     icon: 'react',
     sortOrder: 1,
   },
   {
     name: 'Next.js',
-    category: 'frontend',
+    category: L('frontend', 'frontend'),
     proficiency: 4,
     icon: 'nextjs',
     sortOrder: 2,
   },
   {
     name: 'NestJS',
-    category: 'backend',
+    category: L('backend', 'backend'),
     proficiency: 5,
     icon: 'nestjs',
     sortOrder: 3,
   },
   {
     name: 'Node.js',
-    category: 'backend',
+    category: L('backend', 'backend'),
     proficiency: 5,
     icon: 'nodejs',
     sortOrder: 4,
   },
   {
     name: 'MySQL',
-    category: 'backend',
+    category: L('backend', 'backend'),
     proficiency: 4,
     icon: 'mysql',
     sortOrder: 5,
   },
   {
     name: 'Docker',
-    category: 'tool',
+    category: L('tool', 'tool'),
     proficiency: 4,
     icon: 'docker',
     sortOrder: 6,
   },
-  { name: 'Git', category: 'tool', proficiency: 5, icon: 'git', sortOrder: 7 },
+  {
+    name: 'Git',
+    category: L('tool', 'tool'),
+    proficiency: 5,
+    icon: 'git',
+    sortOrder: 7,
+  },
 ];
 
 export const DEMO_EXPERIENCES = [
   {
     company: 'Tech Agency',
-    role: 'Senior Full Stack Developer',
-    location: 'Remote',
-    description: 'Led development of client portfolio and SaaS projects.',
+    role: L('Senior Full Stack Developer', 'Ахлах Full Stack хөгжүүлэгч'),
+    location: L('Remote', 'Алсын'),
+    description: L(
+      'Led development of client portfolio and SaaS projects.',
+      'Үйлчлүүлэгчийн портфолио болон SaaS төслүүдийг удирдан хөгжүүлсэн.',
+    ),
     startDate: '2022-01-01',
     endDate: null,
     isCurrent: true,
@@ -111,9 +144,12 @@ export const DEMO_EXPERIENCES = [
   },
   {
     company: 'Startup Inc',
-    role: 'Backend Developer',
-    location: 'Ulaanbaatar',
-    description: 'Built REST APIs and database schemas for MVP products.',
+    role: L('Backend Developer', 'Backend хөгжүүлэгч'),
+    location: L('Ulaanbaatar', 'Улаанбаатар'),
+    description: L(
+      'Built REST APIs and database schemas for MVP products.',
+      'MVP бүтээгдэхүүнүүдэд REST API болон database schema бүтээсэн.',
+    ),
     startDate: '2019-06-01',
     endDate: '2021-12-31',
     isCurrent: false,
@@ -125,40 +161,50 @@ export const DEMO_EXPERIENCES = [
 export const DEMO_SITE_SETTINGS = {
   id: 1,
   hero: {
-    title: 'Hi, I am a Developer',
-    subtitle: 'Full Stack Engineer',
-    description: 'Building modern web applications with clean architecture.',
-    ctaLabel: 'View Projects',
+    title: L('Hi, I am a Developer', 'Сайн байна уу, би хөгжүүлэгч'),
+    subtitle: L('Full Stack Engineer', 'Full Stack инженер'),
+    description: L(
+      'Building modern web applications with clean architecture.',
+      'Clean architecture-тай орчин үеийн веб аппликейшн хөгжүүлж байна.',
+    ),
+    ctaLabel: L('View Projects', 'Төслүүд үзэх'),
     ctaUrl: '/projects',
     imageUrl: null,
   },
   header: {
     logoUrl: null,
-    siteName: 'Portfolio',
-    navLinks: [
-      { label: 'Projects', href: '/projects' },
-      { label: 'Experience', href: '/experience' },
-      { label: 'Contact', href: '/contact' },
-    ],
+    siteName: L('Portfolio', 'Портфолио'),
   },
   footer: {
-    copyright: '© 2026 Portfolio Template',
-    tagline: 'Built with NestJS & Next.js',
+    copyright: L('© 2026 Portfolio Template', '© 2026 Портфолио Template'),
+    tagline: L(
+      'Built with NestJS & Next.js',
+      'NestJS & Next.js-ээр бүтээгдсэн',
+    ),
     socialLinks: [
       { platform: 'github', url: 'https://github.com/example' },
       { platform: 'linkedin', url: 'https://linkedin.com/in/example' },
     ],
   },
   seo: {
-    title: 'Portfolio | Full Stack Developer',
-    description: 'Personal portfolio showcasing projects and experience.',
+    title: L(
+      'Portfolio | Full Stack Developer',
+      'Портфолио | Full Stack хөгжүүлэгч',
+    ),
+    description: L(
+      'Personal portfolio showcasing projects and experience.',
+      'Төсөл болон туршлагаа харуулсан хувийн портфолио.',
+    ),
     ogImageUrl: null,
-    keywords: ['portfolio', 'developer', 'full stack'],
+    keywords: localizedStringList(
+      ['portfolio', 'developer', 'full stack'],
+      ['портфолио', 'хөгжүүлэгч', 'full stack'],
+    ),
   },
   contactInfo: {
     email: 'hello@example.com',
     phone: null,
-    location: 'Remote',
+    location: L('Remote', 'Алсын'),
     showForm: true,
   },
 };

@@ -8,6 +8,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import type { LocalizedText } from '@shared/domain/localized-content';
+
 @Entity({ name: 'projects' })
 export class ProjectEntity {
   @PrimaryGeneratedColumn()
@@ -17,14 +19,14 @@ export class ProjectEntity {
   @Column({ length: 120 })
   slug: string;
 
-  @Column({ length: 200 })
-  title: string;
+  @Column({ type: 'json' })
+  title: LocalizedText;
 
-  @Column({ name: 'short_description', length: 500 })
-  shortDescription: string;
+  @Column({ name: 'short_description', type: 'json' })
+  shortDescription: LocalizedText;
 
-  @Column({ type: 'text' })
-  description: string;
+  @Column({ type: 'json' })
+  description: LocalizedText;
 
   @Column({
     name: 'thumbnail_url',
@@ -35,7 +37,7 @@ export class ProjectEntity {
   thumbnailUrl: string | null;
 
   @Column({ type: 'json', nullable: true })
-  images: { url: string; alt?: string }[] | null;
+  images: { url: string; alt?: LocalizedText | string }[] | null;
 
   @Column({ name: 'tech_stack', type: 'json' })
   techStack: string[];

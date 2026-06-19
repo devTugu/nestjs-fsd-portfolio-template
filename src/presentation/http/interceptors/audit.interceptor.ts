@@ -117,6 +117,9 @@ export class AuditInterceptor implements NestInterceptor {
           'site-settings',
           'contact-messages',
           'contact',
+          'navigation',
+          'blog-posts',
+          'pricing',
         ].includes(s),
       ) ?? 'unknown';
     const user = request.user;

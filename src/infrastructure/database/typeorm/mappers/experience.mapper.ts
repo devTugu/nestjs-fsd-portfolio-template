@@ -1,4 +1,5 @@
 import { Experience } from '@domain/experience/entities/experience.entity';
+import { coerceLocalizedText } from '@shared/domain/localized-content.mapper';
 import { ExperienceEntity } from '../entities/experience.entity';
 
 export class ExperienceMapper {
@@ -6,9 +7,9 @@ export class ExperienceMapper {
     return new Experience(
       entity.id,
       entity.company,
-      entity.role,
-      entity.location,
-      entity.description,
+      coerceLocalizedText(entity.role),
+      entity.location ? coerceLocalizedText(entity.location) : null,
+      entity.description ? coerceLocalizedText(entity.description) : null,
       ExperienceMapper.coerceDate(entity.startDate),
       entity.endDate ? ExperienceMapper.coerceDate(entity.endDate) : null,
       entity.isCurrent,

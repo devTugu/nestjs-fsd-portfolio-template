@@ -1,9 +1,10 @@
 import { Skill } from '../entities/skill.entity';
+import type { LocalizedText } from '@shared/domain/localized-content';
 import { PaginatedResult } from '@shared/types/pagination';
 
 export interface CreateSkillData {
   name: string;
-  category: string;
+  category: LocalizedText;
   proficiency: number;
   icon?: string | null;
   isPublished?: boolean;
@@ -12,7 +13,7 @@ export interface CreateSkillData {
 
 export interface UpdateSkillData {
   name?: string;
-  category?: string;
+  category?: LocalizedText;
   proficiency?: number;
   icon?: string | null;
   isPublished?: boolean;

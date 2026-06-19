@@ -12,6 +12,10 @@ import {
   SkillEntity,
   ExperienceEntity,
   SiteSettingEntity,
+  BlogPostEntity,
+  PricingPlanEntity,
+  PricingFeatureRowEntity,
+  NavigationNodeEntity,
 } from '../typeorm/entities';
 import {
   PERMISSION_CODES,
@@ -27,6 +31,12 @@ import {
   DEMO_SITE_SETTINGS,
   DEMO_SKILLS,
 } from './portfolio-seed.const';
+import {
+  DEMO_BLOG_POSTS,
+  DEMO_PRICING_PLANS,
+  DEMO_PRICING_FEATURE_ROWS,
+} from './blog-pricing-seed.const';
+import { DEMO_NAVIGATION_NODES } from './navigation-seed.const';
 
 dotenv.config({ path: '.env' });
 
@@ -50,6 +60,10 @@ const dataSource = new DataSource({
     SkillEntity,
     ExperienceEntity,
     SiteSettingEntity,
+    BlogPostEntity,
+    PricingPlanEntity,
+    PricingFeatureRowEntity,
+    NavigationNodeEntity,
   ],
   synchronize: false,
   connectTimeout: 15000,
@@ -115,6 +129,11 @@ async function runSeed(): Promise<void> {
       userRepo.create({ email: ADMIN_EMAIL, passwordHash, isActive: true }),
     );
     console.log('Created admin user:', ADMIN_EMAIL);
+  } else {
+    await userRepo.update(adminUser.id, {
+      mfaEnabled: false,
+      mfaSecretEncrypted: null,
+    });
   }
 
   const existingUr = await userRoleRepo.findOne({
@@ -203,6 +222,73 @@ async function runSeed(): Promise<void> {
   if (!existingSettings) {
     await siteSettingsRepo.save(siteSettingsRepo.create(DEMO_SITE_SETTINGS));
     console.log('Created default site settings');
+  }
+
+  const blogPostRepo = dataSource.getRepository(BlogPostEntity);
+  for (const demo of DEMO_BLOG_POSTS) {
+    const exists = await blogPostRepo.findOne({ where: { slug: demo.slug } });
+    if (!exists) {
+      await blogPostRepo.save(
+        blogPostRepo.create({
+          ...demo,
+          publishedAt: demo.isPublished ? new Date() : null,
+        }),
+      );
+      console.log('Created demo blog post:', demo.slug);
+    }
+  }
+
+  const pricingPlanRepo = dataSource.getRepository(PricingPlanEntity);
+  for (const demo of DEMO_PRICING_PLANS) {
+    const exists = await pricingPlanRepo.findOne({
+      where: { slug: demo.slug },
+    });
+    if (!exists) {
+      await pricingPlanRepo.save(pricingPlanRepo.create({ ...demo }));
+      console.log('Created demo pricing plan:', demo.slug);
+    }
+  }
+
+  const pricingFeatureRowRepo = dataSource.getRepository(
+    PricingFeatureRowEntity,
+  );
+  for (const demo of DEMO_PRICING_FEATURE_ROWS) {
+    const exists = await pricingFeatureRowRepo.findOne({
+      where: { productName: demo.productName },
+    });
+    if (!exists) {
+      await pricingFeatureRowRepo.save(
+        pricingFeatureRowRepo.create({ ...demo }),
+      );
+      console.log('Created demo pricing feature row:', demo.productName);
+    }
+  }
+
+  const navigationNodeRepo = dataSource.getRepository(NavigationNodeEntity);
+  const existingNavCount = await navigationNodeRepo.count();
+  if (existingNavCount === 0) {
+    const idByKey = new Map<string, number>();
+    for (const demo of DEMO_NAVIGATION_NODES) {
+      const parentId = demo.parentKey
+        ? (idByKey.get(demo.parentKey) ?? null)
+        : null;
+      const saved = await navigationNodeRepo.save(
+        navigationNodeRepo.create({
+          scope: demo.scope,
+          parentId,
+          type: demo.type,
+          labels: demo.labels,
+          descriptions: demo.descriptions ?? null,
+          href: demo.href ?? null,
+          icon: null,
+          metadata: demo.metadata ?? null,
+          sortOrder: demo.sortOrder,
+          isPublished: demo.isPublished,
+        }),
+      );
+      idByKey.set(demo.key, saved.id);
+    }
+    console.log('Created demo navigation nodes:', DEMO_NAVIGATION_NODES.length);
   }
 
   let viewerRole = await roleRepo.findOne({

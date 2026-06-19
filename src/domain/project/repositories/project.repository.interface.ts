@@ -1,11 +1,12 @@
 import { Project, ProjectImage } from '../entities/project.entity';
+import type { LocalizedText } from '@shared/domain/localized-content';
 import { PaginatedResult } from '@shared/types/pagination';
 
 export interface CreateProjectData {
   slug: string;
-  title: string;
-  shortDescription: string;
-  description: string;
+  title: LocalizedText;
+  shortDescription: LocalizedText;
+  description: LocalizedText;
   thumbnailUrl?: string | null;
   images?: ProjectImage[];
   techStack: string[];
@@ -19,9 +20,9 @@ export interface CreateProjectData {
 
 export interface UpdateProjectData {
   slug?: string;
-  title?: string;
-  shortDescription?: string;
-  description?: string;
+  title?: LocalizedText;
+  shortDescription?: LocalizedText;
+  description?: LocalizedText;
   thumbnailUrl?: string | null;
   images?: ProjectImage[];
   techStack?: string[];

@@ -1,9 +1,10 @@
 import { Skill } from '@domain/skill/entities/skill.entity';
+import type { LocalizedText } from '@shared/domain/localized-content';
 
 export interface SkillOutput {
   id: number;
   name: string;
-  category: string;
+  category: LocalizedText;
   proficiency: number;
   icon: string | null;
   isPublished: boolean;

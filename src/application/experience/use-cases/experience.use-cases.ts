@@ -7,6 +7,7 @@ import {
   toExperienceOutput,
 } from '../dto/experience-output.mapper';
 import { EXPERIENCE_REPOSITORY } from '@shared/constants/tokens';
+import type { LocalizedText } from '@shared/domain/localized-content';
 
 @Injectable()
 export class CreateExperienceUseCase {
@@ -17,9 +18,9 @@ export class CreateExperienceUseCase {
 
   async execute(input: {
     company: string;
-    role: string;
-    location?: string | null;
-    description?: string | null;
+    role: LocalizedText;
+    location?: LocalizedText | null;
+    description?: LocalizedText | null;
     startDate: string;
     endDate?: string | null;
     isCurrent?: boolean;
@@ -61,9 +62,9 @@ export class UpdateExperienceUseCase {
     id: number,
     input: {
       company?: string;
-      role?: string;
-      location?: string | null;
-      description?: string | null;
+      role?: LocalizedText;
+      location?: LocalizedText | null;
+      description?: LocalizedText | null;
       startDate?: string;
       endDate?: string | null;
       isCurrent?: boolean;

@@ -90,12 +90,24 @@ export default tseslint.config(
     },
   },
 
+  // Observability bootstrap (optional OTEL/Sentry)
+  {
+    files: [
+      'src/infrastructure/observability/tracing.ts',
+      'src/infrastructure/observability/sentry.ts',
+    ],
+    rules: {
+      'no-console': 'off',
+    },
+  },
+
   // Jest mocks
   {
     files: ['**/*.spec.ts'],
     rules: {
       '@typescript-eslint/unbound-method': 'off',
       '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/naming-convention': 'off',
     },
   },
 

@@ -3,14 +3,15 @@ import { GetProjectUseCase } from './get-project.use-case';
 import { ListProjectsUseCase } from './list-projects.use-case';
 import { ListPublicProjectsUseCase } from './list-public-projects.use-case';
 import { UpdateProjectUseCase } from './update-project.use-case';
+import { localizedText } from '@shared/domain/localized-content';
 
 describe('Project use cases', () => {
   const project = {
     id: 1,
     slug: 'demo',
-    title: 'Demo',
-    shortDescription: 'S',
-    description: 'D',
+    title: localizedText('Demo', 'Demo'),
+    shortDescription: localizedText('S', 'S'),
+    description: localizedText('D', 'D'),
     thumbnailUrl: null,
     images: [],
     techStack: [],
@@ -103,7 +104,7 @@ describe('Project use cases', () => {
     projects.slugExists.mockResolvedValue(false);
     projects.update.mockResolvedValue({ ...project, slug: 'new-title' });
     await new UpdateProjectUseCase(projects as never).execute(1, {
-      title: 'New Title',
+      title: localizedText('New Title', 'New Title'),
     });
     expect(projects.update).toHaveBeenCalled();
   });

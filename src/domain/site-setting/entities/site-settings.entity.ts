@@ -1,7 +1,9 @@
-export interface NavLink {
-  label: string;
-  href: string;
-}
+import {
+  localizedText,
+  localizedStringList,
+  type LocalizedStringList,
+  type LocalizedText,
+} from '@shared/domain/localized-content';
 
 export interface SocialLink {
   platform: string;
@@ -9,37 +11,36 @@ export interface SocialLink {
 }
 
 export interface SiteSettingsHero {
-  title: string;
-  subtitle: string;
-  description: string;
-  ctaLabel: string;
+  title: LocalizedText;
+  subtitle: LocalizedText;
+  description: LocalizedText;
+  ctaLabel: LocalizedText;
   ctaUrl: string;
   imageUrl: string | null;
 }
 
 export interface SiteSettingsHeader {
   logoUrl: string | null;
-  siteName: string;
-  navLinks: NavLink[];
+  siteName: LocalizedText;
 }
 
 export interface SiteSettingsFooter {
-  copyright: string;
-  tagline: string;
+  copyright: LocalizedText;
+  tagline: LocalizedText;
   socialLinks: SocialLink[];
 }
 
 export interface SiteSettingsSeo {
-  title: string;
-  description: string;
+  title: LocalizedText;
+  description: LocalizedText;
   ogImageUrl: string | null;
-  keywords: string[];
+  keywords: LocalizedStringList;
 }
 
 export interface SiteSettingsContactInfo {
   email: string;
   phone: string | null;
-  location: string | null;
+  location: LocalizedText | null;
   showForm: boolean;
 }
 
@@ -58,36 +59,47 @@ export class SiteSettings {
 export const DEFAULT_SITE_SETTINGS = {
   id: 1,
   hero: {
-    title: 'Hi, I am a Developer',
-    subtitle: 'Full Stack Engineer',
-    description: 'Building modern web applications.',
-    ctaLabel: 'View Projects',
+    title: localizedText(
+      'Hi, I am a Developer',
+      'Сайн байна уу, би хөгжүүлэгч',
+    ),
+    subtitle: localizedText('Full Stack Engineer', 'Full Stack инженер'),
+    description: localizedText(
+      'Building modern web applications.',
+      'Орчин үеийн веб аппликейшн хөгжүүлж байна.',
+    ),
+    ctaLabel: localizedText('View Projects', 'Төслүүд үзэх'),
     ctaUrl: '/projects',
     imageUrl: null,
   },
   header: {
     logoUrl: null,
-    siteName: 'Portfolio',
-    navLinks: [
-      { label: 'Projects', href: '/projects' },
-      { label: 'Contact', href: '/contact' },
-    ],
+    siteName: localizedText('Portfolio', 'Портфолио'),
   },
   footer: {
-    copyright: '© 2026 Portfolio',
-    tagline: 'Built with NestJS & Next.js',
+    copyright: localizedText('© 2026 Portfolio', '© 2026 Портфолио'),
+    tagline: localizedText(
+      'Built with NestJS & Next.js',
+      'NestJS & Next.js-ээр бүтээгдсэн',
+    ),
     socialLinks: [],
   },
   seo: {
-    title: 'Portfolio',
-    description: 'Personal portfolio website',
+    title: localizedText('Portfolio', 'Портфолио'),
+    description: localizedText(
+      'Personal portfolio website',
+      'Хувийн портфолио веб сайт',
+    ),
     ogImageUrl: null,
-    keywords: ['portfolio', 'developer'],
+    keywords: localizedStringList(
+      ['portfolio', 'developer'],
+      ['портфолио', 'хөгжүүлэгч'],
+    ),
   },
   contactInfo: {
     email: 'hello@example.com',
     phone: null,
-    location: null,
+    location: localizedText('Remote', 'Алсын'),
     showForm: true,
   },
 } as const;

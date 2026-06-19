@@ -5,15 +5,14 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  ValidateNested,
 } from 'class-validator';
-
-class NavLinkDto {
-  @IsString()
-  label: string;
-
-  @IsString()
-  href: string;
-}
+import { Type } from 'class-transformer';
+import {
+  LocalizedContentDto,
+  LocalizedStringListDto,
+  LocalizedTextDto,
+} from '../shared/localized-text.dto';
 
 class SocialLinkDto {
   @IsString()
@@ -26,23 +25,27 @@ class SocialLinkDto {
 class HeroSectionDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  title?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  title?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  subtitle?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  subtitle?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  description?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  description?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  ctaLabel?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  ctaLabel?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -63,25 +66,23 @@ class HeaderSectionDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  siteName?: string;
-
-  @ApiPropertyOptional({ type: [NavLinkDto] })
-  @IsOptional()
-  @IsArray()
-  navLinks?: NavLinkDto[];
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  siteName?: LocalizedTextDto;
 }
 
 class FooterSectionDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  copyright?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  copyright?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  tagline?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  tagline?: LocalizedTextDto;
 
   @ApiPropertyOptional({ type: [SocialLinkDto] })
   @IsOptional()
@@ -92,24 +93,26 @@ class FooterSectionDto {
 class SeoSectionDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  title?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  title?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  description?: string;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  description?: LocalizedTextDto;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   ogImageUrl?: string | null;
 
-  @ApiPropertyOptional({ type: [String] })
+  @ApiPropertyOptional()
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  keywords?: string[];
+  @ValidateNested()
+  @Type(() => LocalizedStringListDto)
+  keywords?: LocalizedStringListDto;
 }
 
 class ContactInfoSectionDto {
@@ -125,8 +128,9 @@ class ContactInfoSectionDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  location?: string | null;
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  location?: LocalizedTextDto | null;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -137,21 +141,33 @@ class ContactInfoSectionDto {
 export class UpdateSiteSettingsDto {
   @ApiPropertyOptional()
   @IsOptional()
+  @ValidateNested()
+  @Type(() => HeroSectionDto)
   hero?: HeroSectionDto;
 
   @ApiPropertyOptional()
   @IsOptional()
+  @ValidateNested()
+  @Type(() => HeaderSectionDto)
   header?: HeaderSectionDto;
 
   @ApiPropertyOptional()
   @IsOptional()
+  @ValidateNested()
+  @Type(() => FooterSectionDto)
   footer?: FooterSectionDto;
 
   @ApiPropertyOptional()
   @IsOptional()
+  @ValidateNested()
+  @Type(() => SeoSectionDto)
   seo?: SeoSectionDto;
 
   @ApiPropertyOptional()
   @IsOptional()
+  @ValidateNested()
+  @Type(() => ContactInfoSectionDto)
   contactInfo?: ContactInfoSectionDto;
 }
+
+export { LocalizedContentDto };

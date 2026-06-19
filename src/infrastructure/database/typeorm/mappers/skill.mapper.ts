@@ -1,4 +1,5 @@
 import { Skill } from '@domain/skill/entities/skill.entity';
+import { coerceLocalizedText } from '@shared/domain/localized-content.mapper';
 import { SkillEntity } from '../entities/skill.entity';
 
 export class SkillMapper {
@@ -6,7 +7,7 @@ export class SkillMapper {
     return new Skill(
       entity.id,
       entity.name,
-      entity.category,
+      coerceLocalizedText(entity.category),
       entity.proficiency,
       entity.icon,
       entity.isPublished,

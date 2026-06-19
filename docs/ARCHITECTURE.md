@@ -49,6 +49,9 @@ This document describes how the Portfolio CMS API is structured and how requests
 | Experiences | `domain/experience` | `/experiences` | `/admin/experiences` |
 | Site settings | `domain/site-setting` | `/site-settings` | `/admin/site-settings` |
 | Contact | `domain/contact` | `POST /contact` | `/admin/contact-messages` |
+| Blog | `domain/blog` | `/blog-posts` | `/admin/blog-posts` |
+| Pricing | `domain/pricing` | `/pricing` | `/admin/pricing/plans`, `/admin/pricing/feature-rows` |
+| Navigation | `domain/navigation` | `/navigation` | `/admin/navigation` |
 | Media | port only | — | `/admin/media/upload` |
 
 ## Request flow (admin create project)
@@ -88,3 +91,6 @@ This document describes how the Portfolio CMS API is structured and how requests
 
 - [001 — Clean Architecture](adr/001-clean-architecture.md)
 - [005 — Portfolio CMS](adr/005-portfolio-cms.md)
+- [011 — Navigation tree CMS](adr/011-navigation-tree-cms.md)
+- [012 — CMS localized content](adr/012-cms-localized-content.md)
+- [013 — Blog & pricing public site](adr/013-blog-pricing-public-site.md)
