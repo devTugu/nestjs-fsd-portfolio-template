@@ -16,6 +16,8 @@ export interface SiteSettingsHero {
   description: LocalizedText;
   ctaLabel: LocalizedText;
   ctaUrl: string;
+  secondaryCtaLabel: LocalizedText;
+  secondaryCtaUrl: string;
   imageUrl: string | null;
 }
 
@@ -44,7 +46,31 @@ export interface SiteSettingsContactInfo {
   email: string;
   phone: string | null;
   location: LocalizedText | null;
+  address: LocalizedText | null;
+  workHours: LocalizedText | null;
   showForm: boolean;
+}
+
+export interface SiteSettingsTheme {
+  brandColor: string | null;
+}
+
+export interface AboutValue {
+  icon: string;
+  label: LocalizedText;
+}
+
+export interface AboutStat {
+  label: LocalizedText;
+  value: string;
+}
+
+export interface SiteSettingsAbout {
+  brief: LocalizedText;
+  mission: LocalizedText;
+  vision: LocalizedText;
+  values: AboutValue[];
+  stats: AboutStat[];
 }
 
 export class SiteSettings {
@@ -55,6 +81,8 @@ export class SiteSettings {
     public readonly footer: SiteSettingsFooter,
     public readonly seo: SiteSettingsSeo,
     public readonly contactInfo: SiteSettingsContactInfo,
+    public readonly theme: SiteSettingsTheme,
+    public readonly about: SiteSettingsAbout,
     public readonly updatedAt: Date,
   ) {}
 }
@@ -71,8 +99,10 @@ export const DEFAULT_SITE_SETTINGS = {
       'Building modern web applications.',
       'Орчин үеийн веб аппликейшн хөгжүүлж байна.',
     ),
-    ctaLabel: localizedText('View Projects', 'Төслүүд үзэх'),
-    ctaUrl: '/projects',
+    ctaLabel: localizedText('View Brands', 'Брэндүүд үзэх'),
+    ctaUrl: '/brands',
+    secondaryCtaLabel: localizedText('Contact Us', 'Холбоо барих'),
+    secondaryCtaUrl: '/contact',
     imageUrl: null,
   },
   header: {
@@ -93,19 +123,58 @@ export const DEFAULT_SITE_SETTINGS = {
   seo: {
     title: localizedText('Your Site', 'Таны сайт'),
     description: localizedText(
-      'Enterprise portfolio and CMS platform',
-      'Enterprise портфолио болон CMS платформ',
+      'Enterprise multi-brand platform',
+      'Enterprise олон брэндийн платформ',
     ),
     ogImageUrl: null,
     keywords: localizedStringList(
-      ['portfolio', 'developer'],
-      ['портфолио', 'хөгжүүлэгч'],
+      ['brands', 'restaurant', 'events'],
+      ['брэнд', 'ресторан', 'арга хэмжээ'],
     ),
   },
   contactInfo: {
     email: 'hello@example.com',
     phone: null,
     location: localizedText('Remote', 'Алсын'),
+    address: null,
+    workHours: localizedText('Mon–Fri 9:00–18:00', 'Да–Ба 9:00–18:00'),
     showForm: true,
+  },
+  theme: {
+    brandColor: null,
+  },
+  about: {
+    brief: localizedText(
+      'We build memorable brands across restaurants and events.',
+      'Бид ресторан болон арга хэмжээний брэндүүдийг бүтээнэ.',
+    ),
+    mission: localizedText(
+      'Deliver exceptional experiences through our brands.',
+      'Брэндүүдээрээ онцгой туршлага өгнө.',
+    ),
+    vision: localizedText(
+      'Become the leading multi-brand group in our region.',
+      'Манай бүсийн тэргүүлэгч олон брэндийн групп болно.',
+    ),
+    values: [
+      {
+        icon: 'heart',
+        label: localizedText('Quality', 'Чанар'),
+      },
+      {
+        icon: 'users',
+        label: localizedText('Teamwork', 'Багийн ажил'),
+      },
+    ],
+    stats: [
+      {
+        label: localizedText('Years', 'Жил'),
+        value: '10+',
+      },
+      {
+        label: localizedText('Brands', 'Брэнд'),
+        value: '4+',
+      },
+    ],
   },
 } as const;

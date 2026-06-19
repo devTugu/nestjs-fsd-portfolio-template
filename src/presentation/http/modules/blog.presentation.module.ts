@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BlogPostPublicV1Controller } from '../controllers/v1/public/blog-post.controller';
+import { NewsPublicV1Controller } from '../controllers/v1/public/news.controller';
 import { BlogPostAdminV1Controller } from '../controllers/v1/admin/blog-post.controller';
 import { CreateBlogPostUseCase } from '@application/blog/use-cases/create-blog-post.use-case';
 import { ListBlogPostsUseCase } from '@application/blog/use-cases/list-blog-posts.use-case';
@@ -10,7 +11,11 @@ import { ListPublicBlogPostsUseCase } from '@application/blog/use-cases/list-pub
 import { GetPublicBlogPostUseCase } from '@application/blog/use-cases/get-public-blog-post.use-case';
 
 @Module({
-  controllers: [BlogPostPublicV1Controller, BlogPostAdminV1Controller],
+  controllers: [
+    BlogPostPublicV1Controller,
+    BlogPostAdminV1Controller,
+    NewsPublicV1Controller,
+  ],
   providers: [
     CreateBlogPostUseCase,
     ListBlogPostsUseCase,

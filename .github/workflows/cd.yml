@@ -29,12 +29,12 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/portfolio-api:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}/re-cms-api:${{ github.ref_name }}
 
       - name: Trivy scan API image
         uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
         with:
-          image-ref: ghcr.io/${{ github.repository }}/portfolio-api:${{ github.ref_name }}
+          image-ref: ghcr.io/${{ github.repository }}/re-cms-api:${{ github.ref_name }}
           severity: CRITICAL,HIGH
           exit-code: '1'
 
@@ -50,12 +50,12 @@ jobs:
         with:
           context: frontend
           push: true
-          tags: ghcr.io/devTugu/nextjs-fsd-portfolio-template/portfolio-admin:${{ github.ref_name }}
+          tags: ghcr.io/devTugu/nextjs-fsd-portfolio-template/re-cms-admin:${{ github.ref_name }}
 
       - name: Trivy scan Admin image
         uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
         with:
-          image-ref: ghcr.io/devTugu/nextjs-fsd-portfolio-template/portfolio-admin:${{ github.ref_name }}
+          image-ref: ghcr.io/devTugu/nextjs-fsd-portfolio-template/re-cms-admin:${{ github.ref_name }}
           severity: CRITICAL,HIGH
           exit-code: '1'
 
@@ -64,8 +64,8 @@ jobs:
 
       - name: Helm lint and template
         run: |
-          helm lint deploy/helm/portfolio-stack
-          helm template portfolio-test deploy/helm/portfolio-stack \
+          helm lint deploy/helm/re-cms-stack
+          helm template portfolio-test deploy/helm/re-cms-stack \
             --set api.enabled=true \
             --set frontend.enabled=true \
             --set api.image.tag=${{ github.ref_name }} \
@@ -74,8 +74,8 @@ jobs:
       - name: Deploy staging (dry-run)
         if: startsWith(github.ref_name, 'v')
         run: |
-          helm upgrade --install portfolio-staging deploy/helm/portfolio-stack \
-            --namespace portfolio-staging --create-namespace \
+          helm upgrade --install re-cms-staging deploy/helm/re-cms-stack \
+            --namespace re-cms-staging --create-namespace \
             --set api.image.tag=${{ github.ref_name }} \
             --set frontend.image.tag=${{ github.ref_name }} \
             --dry-run

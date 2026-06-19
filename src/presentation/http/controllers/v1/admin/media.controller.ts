@@ -33,7 +33,7 @@ export class MediaAdminV1Controller {
   constructor(private readonly uploadMedia: UploadMediaUseCase) {}
 
   @Post('upload')
-  @Permissions('PROJECT_UPDATE')
+  @Permissions('BRAND_UPDATE')
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Upload media file (requires S3 config)' })
   @UseInterceptors(

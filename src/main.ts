@@ -27,14 +27,11 @@ async function bootstrap() {
     configService.get<string>('SWAGGER_ENABLED', 'false') === 'true';
 
   if (isSwaggerEnabled) {
-    const displayName = configService.get<string>(
-      'APP_DISPLAY_NAME',
-      'Portfolio Platform',
-    );
+    const displayName = configService.get<string>('APP_DISPLAY_NAME', 'RE CMS');
     const swaggerConfig = new DocumentBuilder()
       .setTitle(`${displayName} API v1`)
       .setDescription(
-        `${displayName} — Clean Architecture RBAC API with JWT auth, CMS, and portfolio modules.`,
+        `${displayName} — Clean Architecture RBAC API with JWT auth and multi-brand CMS (brands, history, leadership, team, news).`,
       )
       .setVersion('1.0')
       .addBearerAuth(

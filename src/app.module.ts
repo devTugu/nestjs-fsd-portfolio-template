@@ -21,16 +21,16 @@ import { RequestIdMiddleware } from '@presentation/http/middleware/request-id.mi
 import { AuthPresentationModule } from '@presentation/http/modules/auth.presentation.module';
 import { UserPresentationModule } from '@presentation/http/modules/user.presentation.module';
 import { AuthorizationPresentationModule } from '@presentation/http/modules/authorization.presentation.module';
-import { ProjectPresentationModule } from '@presentation/http/modules/project.presentation.module';
-import { SkillPresentationModule } from '@presentation/http/modules/skill.presentation.module';
-import { ExperiencePresentationModule } from '@presentation/http/modules/experience.presentation.module';
+import { BrandPresentationModule } from '@presentation/http/modules/brand.presentation.module';
+import { HistoryPresentationModule } from '@presentation/http/modules/history.presentation.module';
+import { LeadershipPresentationModule } from '@presentation/http/modules/leadership.presentation.module';
+import { TeamPresentationModule } from '@presentation/http/modules/team.presentation.module';
 import { SiteSettingPresentationModule } from '@presentation/http/modules/site-setting.presentation.module';
 import { ContactPresentationModule } from '@presentation/http/modules/contact.presentation.module';
 import { MediaPresentationModule } from '@presentation/http/modules/media.presentation.module';
 import { DashboardPresentationModule } from '@presentation/http/modules/dashboard.presentation.module';
 import { AuditPresentationModule } from '@presentation/http/modules/audit.presentation.module';
 import { BlogPresentationModule } from '@presentation/http/modules/blog.presentation.module';
-import { PricingPresentationModule } from '@presentation/http/modules/pricing.presentation.module';
 import { NavigationPresentationModule } from '@presentation/http/modules/navigation.presentation.module';
 
 @Module({
@@ -75,16 +75,16 @@ import { NavigationPresentationModule } from '@presentation/http/modules/navigat
     AuthPresentationModule,
     UserPresentationModule,
     AuthorizationPresentationModule,
-    ProjectPresentationModule,
-    SkillPresentationModule,
-    ExperiencePresentationModule,
+    BrandPresentationModule,
+    HistoryPresentationModule,
+    LeadershipPresentationModule,
+    TeamPresentationModule,
     SiteSettingPresentationModule,
     ContactPresentationModule,
     MediaPresentationModule,
     DashboardPresentationModule,
     AuditPresentationModule,
     BlogPresentationModule,
-    PricingPresentationModule,
     NavigationPresentationModule,
   ],
   providers: [

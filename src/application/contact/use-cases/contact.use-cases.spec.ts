@@ -2,7 +2,10 @@ import { SubmitContactMessageUseCase } from './contact.use-cases';
 
 describe('SubmitContactMessageUseCase', () => {
   const messages = { create: jest.fn() };
-  const notifications = { sendContactNotification: jest.fn() };
+  const notifications = {
+    sendContactNotification: jest.fn(),
+    sendContactAutoReply: jest.fn(),
+  };
   const useCase = new SubmitContactMessageUseCase(
     messages as never,
     notifications,

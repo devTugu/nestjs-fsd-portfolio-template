@@ -117,7 +117,7 @@ jobs:
 
       - name: Helm lint and template
         run: |
-          helm lint deploy/helm/portfolio-stack
-          helm template portfolio-test deploy/helm/portfolio-stack \
+          helm lint deploy/helm/re-cms-stack
+          helm template portfolio-test deploy/helm/re-cms-stack \
             --set api.enabled=true \
             --set frontend.enabled=true > /dev/null

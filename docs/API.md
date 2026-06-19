@@ -1,336 +1,133 @@
-# API Reference (v1)
+# API Reference
 
 Base URL: `/api/v1`
 
-Global prefix is configured in `main.ts`. All successful responses are wrapped:
+## Response envelope
 
 ```json
 {
   "success": true,
-  "data": { ... },
-  "timestamp": "2026-06-15T12:00:00.000Z",
-  "path": "/api/v1/projects",
+  "data": {},
+  "timestamp": "2026-06-19T12:00:00.000Z",
+  "path": "/api/v1/brands",
   "requestId": "uuid"
 }
 ```
 
-Errors use a consistent shape from `AllExceptionsFilter`.
+Localized CMS fields return `{ "en": "...", "mn": "..." }`. The Next.js frontend resolves locale via cookie (`pickLocalized`).
 
 ---
 
-## Authentication
+## Public endpoints
 
-### Public endpoints
-
-Decorated with `@Public()` — no `Authorization` header required.
-
-### Protected endpoints
-
-```
-Authorization: Bearer <accessToken>
-```
-
-Admin portfolio routes also require the matching permission (see [Permissions](#permissions)).
-
-### Auth endpoints
-
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/auth/login` | Public | `LoginResult`: tokens, `requiresMfa`, or `requiresMfaEnrollment` |
-| POST | `/auth/mfa/verify` | Public | Complete MFA step-up → `TokenPair` |
-| POST | `/auth/mfa/enrollment/enroll` | Public | Start forced enrollment → `{ otpauthUrl }` |
-| POST | `/auth/mfa/enrollment/confirm` | Public | Confirm enrollment → `TokenPair` |
-| POST | `/auth/mfa/enroll` | Bearer | Start MFA enrollment |
-| POST | `/auth/mfa/enroll/confirm` | Bearer | Confirm MFA enrollment |
-| POST | `/auth/mfa/disable` | Bearer | Disable MFA (requires TOTP `code`) |
-| GET | `/auth/oauth/authorize` | Public | OIDC authorize URL |
-| POST | `/auth/oauth/callback` | Public | OIDC callback → `LoginResult` |
-| POST | `/auth/refresh` | Public | Rotates tokens |
-| POST | `/auth/logout` | Bearer | Revokes refresh token |
-| GET | `/auth/me` | Bearer | Profile + `mfaEnabled` + permissions |
-
-#### LoginResult union
-
-```typescript
-type LoginResult =
-  | TokenPair
-  | { requiresMfa: true; mfaToken: string }
-  | { requiresMfaEnrollment: true; enrollmentToken: string };
-```
-
-Roles in `MFA_REQUIRED_ROLES` (default `SUPER_ADMIN`) must enroll MFA before receiving tokens.
-
----
-
-## Portfolio — Public
-
-CMS human-readable fields return **LocalizedText** `{ en, mn }` or **LocalizedStringList** `{ en: string[], mn: string[] }`. The frontend resolves locale via cookie (`pickLocalized`). Slugs remain single canonical strings (from `title.en`). See [ADR 012](./adr/012-cms-localized-content.md).
-
-### Projects
-
-| Method | Path | Query | Description |
-|--------|------|-------|-------------|
-| GET | `/projects` | `featured`, `limit` (max 100) | Published projects, ordered by `sortOrder` |
-| GET | `/projects/:slug` | — | Single published project; 404 if draft or missing |
-
-### Skills
-
-| Method | Path | Query | Description |
-|--------|------|-------|-------------|
-| GET | `/skills` | `category` | Published skills |
-
-### Experiences
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/experiences` | Published experiences, ordered |
+No `Authorization` header required (`@Public()`).
 
 ### Site settings
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/site-settings` | Singleton: hero, header, footer, seo, contactInfo |
+| GET | `/site-settings` | Hero, header, footer, SEO, contact, theme, about |
 
-Returns defaults when no row exists yet. Human-readable CMS strings use **LocalizedText** `{ en, mn }` (see [ADR 012](./adr/012-cms-localized-content.md)). Example hero field:
-
-```json
-{
-  "hero": {
-    "title": { "en": "Hi, I am a Developer", "mn": "Сайн байна уу, би хөгжүүлэгч" },
-    "ctaUrl": "/projects"
-  }
-}
-```
-
-`header.navLinks` removed — use Navigation CMS instead.
+v3 fields: `theme.brandColor`, `about.{brief,mission,vision,values,stats}`, `hero.secondaryCtaLabel/Url`, `contactInfo.{address,workHours}`.
 
 ### Navigation
 
 | Method | Path | Query | Description |
 |--------|------|-------|-------------|
-| GET | `/navigation` | `scope=HEADER\|FOOTER` | Published navigation tree `{ tree: NavigationNodeTree[] }` |
+| GET | `/navigation` | `scope=HEADER\|FOOTER` | Published navigation tree |
 
-Nodes include localized `labels: { en, mn }`, optional `descriptions`, and nested `children`. Unpublished nodes and empty parent branches are omitted.
-
-### Blog posts
+### Brands
 
 | Method | Path | Query | Description |
 |--------|------|-------|-------------|
-| GET | `/blog-posts` | `category`, `page`, `limit` | Published blog posts (paginated) |
-| GET | `/blog-posts/:slug` | — | Single published post; 404 if draft or missing |
+| GET | `/brands` | `type=RESTAURANT\|EVENT`, `limit` | Published brands |
+| GET | `/brands/:slug` | — | Detail with `menuItems` (restaurant) or `events` (event) |
 
-Categories: `PRODUCT`, `ENGINEERING`, `CORPORATE`, `INDUSTRY`. Human-readable fields use **LocalizedText** (ADR 012).
-
-### Pricing
+### History, leadership, team
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/pricing` | Published plans + feature comparison matrix |
+| GET | `/history` | Published company timeline |
+| GET | `/leadership` | Published leadership members |
+| GET | `/team` | Published team members |
 
-Returns `{ plans: PricingPlanOutput[], featureRows: PricingFeatureRowOutput[] }`.
+### News
+
+| Method | Path | Query | Description |
+|--------|------|-------|-------------|
+| GET | `/news` | `page`, `limit`, `category` | Published posts (paginated) |
+| GET | `/news/:slug` | — | Single post; 404 if draft |
+
+Legacy: `GET /blog-posts`, `GET /blog-posts/:slug` remain for backward compatibility.
 
 ### Contact
 
-| Method | Path | Rate limit | Description |
-|--------|------|------------|-------------|
-| POST | `/contact` | 5 / minute | Submit contact message |
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/contact` | Submit form (rate-limited; honeypot field `website`) |
 
-**Body:**
+### Health
 
-```json
-{
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "subject": "Project inquiry",
-  "message": "I would like to discuss a project...",
-  "website": ""
-}
-```
-
-| Field | Rules |
-|-------|-------|
-| `name` | Required, max 120 chars |
-| `email` | Valid email |
-| `message` | Min 10 chars |
-| `website` | Honeypot — must be empty or omitted |
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/health/live` | Liveness |
+| GET | `/health/ready` | Readiness (DB + Redis) |
 
 ---
 
-## Portfolio — Admin
+## Admin endpoints
 
-All routes require Bearer token + permission.
-
-### Projects
-
-| Method | Path | Permission |
-|--------|------|------------|
-| GET | `/admin/projects` | `PROJECT_READ` |
-| POST | `/admin/projects` | `PROJECT_CREATE` |
-| GET | `/admin/projects/:id` | `PROJECT_READ` |
-| PATCH | `/admin/projects/:id` | `PROJECT_UPDATE` |
-| DELETE | `/admin/projects/:id` | `PROJECT_DELETE` |
-
-**Create body (required fields):** `title`, `shortDescription`, `description`, `techStack[]`
-
-Optional: `slug`, `thumbnailUrl`, `images[]`, `liveUrl`, `repoUrl`, `isFeatured`, `isPublished`, `sortOrder`
-
-Slug is auto-generated from title when omitted. Setting `isPublished: true` sets `publishedAt`.
-
-### Skills
-
-| Method | Path | Permission |
-|--------|------|------------|
-| GET | `/admin/skills` | `SKILL_READ` |
-| POST | `/admin/skills` | `SKILL_CREATE` |
-| GET | `/admin/skills/:id` | `SKILL_READ` |
-| PATCH | `/admin/skills/:id` | `SKILL_UPDATE` |
-| DELETE | `/admin/skills/:id` | `SKILL_DELETE` |
-
-`proficiency`: integer 1–5.
-
-### Experiences
-
-| Method | Path | Permission |
-|--------|------|------------|
-| GET | `/admin/experiences` | `EXPERIENCE_READ` |
-| POST | `/admin/experiences` | `EXPERIENCE_CREATE` |
-| GET | `/admin/experiences/:id` | `EXPERIENCE_READ` |
-| PATCH | `/admin/experiences/:id` | `EXPERIENCE_UPDATE` |
-| DELETE | `/admin/experiences/:id` | `EXPERIENCE_DELETE` |
-
-Domain rules: `isCurrent: true` requires no `endDate`; `endDate >= startDate`.
-
-### Site settings
-
-| Method | Path | Permission |
-|--------|------|------------|
-| GET | `/admin/site-settings` | `SITE_SETTING_READ` |
-| PATCH | `/admin/site-settings` | `SITE_SETTING_UPDATE` |
-
-Partial update — only sent JSON sections are merged.
-
-### Contact messages
-
-| Method | Path | Permission |
-|--------|------|------------|
-| GET | `/admin/contact-messages` | `CONTACT_READ` |
-| PATCH | `/admin/contact-messages/:id` | `CONTACT_UPDATE` |
-| DELETE | `/admin/contact-messages/:id` | `CONTACT_DELETE` |
-
-**Status values:** `NEW`, `READ`, `ARCHIVED`
-
-### Navigation
-
-| Method | Path | Permission |
-|--------|------|------------|
-| GET | `/admin/navigation` | `NAV_READ` |
-| POST | `/admin/navigation/nodes` | `NAV_CREATE` |
-| PATCH | `/admin/navigation/nodes/:id` | `NAV_UPDATE` |
-| DELETE | `/admin/navigation/nodes/:id` | `NAV_DELETE` |
-| PUT | `/admin/navigation/reorder` | `NAV_UPDATE` |
-
-Query `scope=HEADER|FOOTER` on list. Reorder body: `{ scope, items: [{ id, parentId, sortOrder }] }`.
-
-### Blog posts
-
-| Method | Path | Permission |
-|--------|------|------------|
-| GET | `/admin/blog-posts` | `BLOG_READ` |
-| POST | `/admin/blog-posts` | `BLOG_CREATE` |
-| GET | `/admin/blog-posts/:id` | `BLOG_READ` |
-| PATCH | `/admin/blog-posts/:id` | `BLOG_UPDATE` |
-| DELETE | `/admin/blog-posts/:id` | `BLOG_DELETE` |
-
-**Create body (required):** `title`, `excerpt`, `content`, `category`, `authorName`, `authorRole` (all localized except `category`).
-
-Optional: `slug`, `coverImageUrl`, `isPublished`, `sortOrder`. Slug auto-generated from `title.en` when omitted.
-
-### Pricing plans
-
-| Method | Path | Permission |
-|--------|------|------------|
-| GET | `/admin/pricing/plans` | `PRICING_READ` |
-| POST | `/admin/pricing/plans` | `PRICING_CREATE` |
-| GET | `/admin/pricing/plans/:id` | `PRICING_READ` |
-| PATCH | `/admin/pricing/plans/:id` | `PRICING_UPDATE` |
-| DELETE | `/admin/pricing/plans/:id` | `PRICING_DELETE` |
-
-### Pricing feature rows
-
-| Method | Path | Permission |
-|--------|------|------------|
-| GET | `/admin/pricing/feature-rows` | `PRICING_READ` |
-| POST | `/admin/pricing/feature-rows` | `PRICING_CREATE` |
-| GET | `/admin/pricing/feature-rows/:id` | `PRICING_READ` |
-| PATCH | `/admin/pricing/feature-rows/:id` | `PRICING_UPDATE` |
-| DELETE | `/admin/pricing/feature-rows/:id` | `PRICING_DELETE` |
-
-### Media upload (optional)
-
-| Method | Path | Permission |
-|--------|------|------------|
-| POST | `/admin/media/upload` | `PROJECT_UPDATE` |
-
-Multipart field: `file` (max 5 MB; jpeg, png, webp, gif)
-
-Requires `S3_BUCKET`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` configured. Otherwise use URL fields in CMS.
-
----
-
-## RBAC — Admin
-
-Inherited from the base template. See Swagger at `/docs` for full schemas.
+Require `Authorization: Bearer <access_token>` and permission codes. See [CMS-REFERENCE.md](CMS-REFERENCE.md).
 
 | Resource | Base path |
 |----------|-----------|
-| Users | `/users` |
-| Roles | `/roles` |
+| Brands | `/admin/brands` |
+| Menu items | `/admin/menu-items` |
+| Brand events | `/admin/brand-events` |
+| History | `/admin/history` |
+| Leadership | `/admin/leadership` |
+| Team | `/admin/team` |
+| Site settings | `/admin/site-settings` |
+| Contact inbox | `/admin/contact-messages` |
+| News | `/admin/blog-posts` |
+| Navigation | `/admin/navigation` (nodes + reorder) |
+| Dashboard | `/admin/dashboard/stats` |
+| Audit logs | `/admin/audit-logs` |
+| Media | `/admin/media/upload` |
+
+Standard CRUD: `POST`, `GET`, `GET :id`, `PATCH :id`, `DELETE :id` unless noted.
+
+---
+
+## Auth endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/auth/login` | Email/password login (may return MFA challenge) |
+| POST | `/auth/mfa/verify` | Complete MFA login |
+| POST | `/auth/mfa/enrollment/enroll` | Start MFA enrollment |
+| POST | `/auth/mfa/enrollment/confirm` | Confirm MFA enrollment |
+| POST | `/auth/mfa/enroll` | Enroll MFA (authenticated) |
+| POST | `/auth/mfa/enroll/confirm` | Confirm MFA (authenticated) |
+| POST | `/auth/mfa/disable` | Disable MFA |
+| GET | `/auth/oauth/authorize` | OIDC authorization URL |
+| POST | `/auth/oauth/callback` | OIDC callback |
+| POST | `/auth/refresh` | Refresh token rotation |
+| POST | `/auth/logout` | Invalidate refresh token |
+| GET | `/auth/me` | Current user profile |
+
+---
+
+## RBAC endpoints
+
+| Resource | Path |
+|----------|------|
+| Users | `/users` (+ `GET :id/export`, `POST :id/anonymize`) |
+| Roles | `/roles` (+ `POST assign`, `DELETE assign/:userId/:roleId`) |
 | Permissions | `/permissions` |
 
 ---
 
-## Health
+## Next.js BFF
 
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/health/live` | Public | Process alive |
-| GET | `/health/ready` | Public | DB (+ Redis) connectivity |
-
----
-
-## Permissions
-
-Portfolio permission codes (seeded):
-
-```
-PROJECT_READ, PROJECT_CREATE, PROJECT_UPDATE, PROJECT_DELETE
-SKILL_READ, SKILL_CREATE, SKILL_UPDATE, SKILL_DELETE
-EXPERIENCE_READ, EXPERIENCE_CREATE, EXPERIENCE_UPDATE, EXPERIENCE_DELETE
-SITE_SETTING_READ, SITE_SETTING_UPDATE
-CONTACT_READ, CONTACT_UPDATE, CONTACT_DELETE
-BLOG_READ, BLOG_CREATE, BLOG_UPDATE, BLOG_DELETE
-PRICING_READ, PRICING_CREATE, PRICING_UPDATE, PRICING_DELETE
-NAV_READ, NAV_CREATE, NAV_UPDATE, NAV_DELETE
-```
-
-`SUPER_ADMIN` receives all permissions. `CONTENT_MANAGER` receives portfolio permissions only.
-
----
-
-## Pagination (admin lists)
-
-Query params: `page` (default 1), `limit` (default 20, max 100)
-
-Response `data`:
-
-```json
-{
-  "items": [],
-  "total": 0,
-  "page": 1,
-  "limit": 20,
-  "totalPages": 0
-}
-```
-
-Public list endpoints return a plain array (or single object) inside `data`.
+Server components call this API via `API_INTERNAL_URL` with `revalidate: 60`. See `nextjs-fsd-portfolio-template/src/entities/public-api/public-server.ts`.

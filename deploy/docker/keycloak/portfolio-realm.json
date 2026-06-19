@@ -18,10 +18,10 @@
   ],
   "clients": [
     {
-      "clientId": "portfolio-admin",
+      "clientId": "re-cms-admin",
       "enabled": true,
       "publicClient": false,
-      "secret": "portfolio-admin-secret",
+      "secret": "re-cms-admin-secret",
       "redirectUris": [
         "http://localhost:3000/oauth/callback",
         "http://127.0.0.1:3000/oauth/callback"

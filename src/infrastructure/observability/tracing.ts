@@ -19,7 +19,7 @@ export async function initTracing(): Promise<void> {
     const endpoint =
       process.env.OTEL_EXPORTER_OTLP_ENDPOINT ??
       'http://localhost:4318/v1/traces';
-    const serviceName = process.env.OTEL_SERVICE_NAME ?? 'portfolio-api';
+    const serviceName = process.env.OTEL_SERVICE_NAME ?? 're-cms-api';
 
     const sdk = new NodeSDK({
       resource: resourceFromAttributes({

@@ -1,96 +1,102 @@
-# Architecture Overview
+# Architecture
 
-This document describes how the Portfolio CMS API is structured and how requests flow through the system.
+NestJS API following **Clean Architecture** with a dual-route design: public read endpoints (`@Public()`) and admin CRUD (`/admin/*` + JWT + permissions).
 
-## Layer diagram
+## Layer structure
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  presentation/http                                          │
-│  • public controllers  (@Public)                            │
-│  • admin controllers   (@Permissions)                         │
-│  • guards, filters, interceptors, DTOs                      │
-└───────────────────────────┬─────────────────────────────────┘
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-│  application                                                │
-│  • use cases (one operation per class)                      │
-│  • output DTOs + mappers                                    │
-│  • ports (NotificationPort, MediaStoragePort)               │
-└───────────────────────────┬─────────────────────────────────┘
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-│  domain                                                     │
-│  • entities (pure TypeScript classes)                       │
-│  • repository interfaces                                    │
-│  • domain services (e.g. experience date rules)             │
-│  • value objects (Email)                                      │
-└───────────────────────────▲─────────────────────────────────┘
-                            │
-┌───────────────────────────┴─────────────────────────────────┐
-│  infrastructure                                             │
-│  • TypeORM entities, mappers, repositories                  │
-│  • Redis / JWT / bcrypt adapters                            │
-│  • Nodemailer, S3 adapters                                  │
-│  • migrations, seed                                         │
-└─────────────────────────────────────────────────────────────┘
+src/
+├── domain/              # Entities, repository interfaces (no Nest/ORM)
+├── application/         # Use cases, ports, application DTOs
+├── infrastructure/      # TypeORM, Redis, JWT, migrations, seed
+├── presentation/http/   # Controllers, guards, filters, DTOs
+└── shared/              # Types, localized content helpers
 ```
 
-**Rule:** dependencies point inward only. Domain has zero imports from outer layers.
+**Dependency rule:** `presentation` → `application` → `domain` ← `infrastructure`
 
-## Bounded contexts
+## Registered modules (v3)
 
-| Context | Domain path | Public API | Admin API |
-|---------|-------------|------------|-----------|
-| Auth | (uses User) | `/auth/*` | — |
-| RBAC | `domain/authorization`, `domain/user` | — | `/users`, `/roles`, `/permissions` |
-| Projects | `domain/project` | `/projects` | `/admin/projects` |
-| Skills | `domain/skill` | `/skills` | `/admin/skills` |
-| Experiences | `domain/experience` | `/experiences` | `/admin/experiences` |
-| Site settings | `domain/site-setting` | `/site-settings` | `/admin/site-settings` |
-| Contact | `domain/contact` | `POST /contact` | `/admin/contact-messages` |
-| Blog | `domain/blog` | `/blog-posts` | `/admin/blog-posts` |
-| Pricing | `domain/pricing` | `/pricing` | `/admin/pricing/plans`, `/admin/pricing/feature-rows` |
-| Navigation | `domain/navigation` | `/navigation` | `/admin/navigation` |
-| Media | port only | — | `/admin/media/upload` |
+`AppModule` imports 14 presentation modules:
 
-## Request flow (admin create project)
+| Module | Responsibility |
+|--------|----------------|
+| Auth | Login, refresh, logout, MFA, OIDC |
+| User | User CRUD, GDPR export/anonymize |
+| Authorization | Roles, permissions, health |
+| Brand | Brands, menu items, brand events |
+| History | Company timeline |
+| Leadership | Leadership members |
+| Team | Team members |
+| SiteSetting | Singleton site settings |
+| Contact | Public form + admin inbox |
+| Media | S3-compatible upload |
+| Dashboard | Admin stats |
+| Audit | Audit log read API |
+| Blog | News posts (table: `blog_posts`) |
+| Navigation | Header/footer tree CMS |
 
-1. `ProjectAdminV1Controller` validates `CreateProjectDto`
-2. `CreateProjectUseCase` checks slug uniqueness, sets `publishedAt` if published
-3. `IProjectRepository.create()` persists via TypeORM
-4. `toProjectOutput()` maps domain → API response
-5. `ResponseInterceptor` wraps `{ success, data, timestamp, path, requestId }`
-6. `AuditInterceptor` records POST on success
+## System context
 
-## Request flow (public list projects)
+```mermaid
+flowchart LR
+  Browser[Browser]
+  NextBFF[Next.js BFF]
+  API[NestJS API]
+  MySQL[(MySQL)]
+  Redis[(Redis)]
+  SMTP[SMTP]
+  S3[S3]
 
-1. `ProjectPublicV1Controller` — `@Public()` skips JWT
-2. `ListPublicProjectsUseCase` → repository filters `isPublished = true`
-3. Unpublished / soft-deleted rows are never returned
+  Browser --> NextBFF
+  NextBFF --> API
+  API --> MySQL
+  API --> Redis
+  API --> SMTP
+  API --> S3
+```
 
-## Module wiring
+## Request flow
 
-| Layer | Registration |
-|-------|--------------|
-| Repositories + adapters | `InfrastructureModule` (`@Global()`) |
-| Use cases + controllers | `*PresentationModule` per context |
-| Root | `AppModule` imports all presentation modules |
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Guard as JwtAuthGuard
+  participant Perm as PermissionsGuard
+  participant Ctrl as Controller
+  participant UC as UseCase
+  participant Repo as Repository
 
-## Path aliases
+  Client->>Guard: HTTP request
+  alt Public endpoint
+    Guard-->>Ctrl: allow
+  else Protected
+    Guard->>Perm: validate JWT
+    Perm->>Ctrl: check permission code
+  end
+  Ctrl->>UC: execute(dto)
+  UC->>Repo: domain operation
+  Repo-->>UC: entity
+  UC-->>Ctrl: result
+  Ctrl-->>Client: envelope response
+```
 
-| Alias | Path |
-|-------|------|
-| `@domain/*` | `src/domain/*` |
-| `@application/*` | `src/application/*` |
-| `@infrastructure/*` | `src/infrastructure/*` |
-| `@presentation/*` | `src/presentation/*` |
-| `@shared/*` | `src/shared/*` |
+## Global cross-cutting
 
-## Related ADRs
+| Component | Role |
+|-----------|------|
+| `RequestIdMiddleware` | `X-Request-Id` on every request |
+| `ResponseInterceptor` | Standard `{ success, data, timestamp, path, requestId }` envelope |
+| `AuditInterceptor` | Writes mutating admin actions to `audit_logs` |
+| `ThrottlerGuard` | Rate limiting (Redis-backed when enabled) |
+| `JwtAuthGuard` | JWT validation; skipped for `@Public()` |
+| `PermissionsGuard` | RBAC permission codes per route |
 
-- [001 — Clean Architecture](adr/001-clean-architecture.md)
-- [005 — Portfolio CMS](adr/005-portfolio-cms.md)
-- [011 — Navigation tree CMS](adr/011-navigation-tree-cms.md)
-- [012 — CMS localized content](adr/012-cms-localized-content.md)
-- [013 — Blog & pricing public site](adr/013-blog-pricing-public-site.md)
+## API versioning
+
+All routes are under `/api/v1`. See [API.md](API.md).
+
+## Related
+
+- [CMS Reference](CMS-REFERENCE.md) — entity model
+- [ADR 001](adr/001-clean-architecture.md) — layer decision record

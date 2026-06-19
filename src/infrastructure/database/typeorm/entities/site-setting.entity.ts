@@ -1,10 +1,12 @@
 import { Column, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import {
+  SiteSettingsAbout,
   SiteSettingsContactInfo,
   SiteSettingsFooter,
   SiteSettingsHeader,
   SiteSettingsHero,
   SiteSettingsSeo,
+  SiteSettingsTheme,
 } from '@domain/site-setting/entities/site-settings.entity';
 
 @Entity({ name: 'site_settings' })
@@ -26,6 +28,12 @@ export class SiteSettingEntity {
 
   @Column({ name: 'contact_info', type: 'json' })
   contactInfo: SiteSettingsContactInfo;
+
+  @Column({ type: 'json', default: () => "'{}'" })
+  theme: SiteSettingsTheme;
+
+  @Column({ type: 'json', default: () => "'{}'" })
+  about: SiteSettingsAbout;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
   updatedAt: Date;

@@ -10,15 +10,16 @@ import {
   RolePermission,
   RefreshToken,
   AuditLog,
-  ProjectEntity,
-  SkillEntity,
-  ExperienceEntity,
   SiteSettingEntity,
   ContactMessageEntity,
   BlogPostEntity,
-  PricingPlanEntity,
-  PricingFeatureRowEntity,
   NavigationNodeEntity,
+  BrandEntity,
+  MenuItemEntity,
+  BrandEventEntity,
+  HistoryEntryEntity,
+  LeadershipMemberEntity,
+  TeamMemberEntity,
 } from './database/typeorm/entities';
 import {
   USER_REPOSITORY,
@@ -30,15 +31,16 @@ import {
   TOKEN_BLACKLIST,
   PERMISSION_CACHE,
   AUDIT_LOG_REPOSITORY,
-  PROJECT_REPOSITORY,
-  SKILL_REPOSITORY,
-  EXPERIENCE_REPOSITORY,
   SITE_SETTING_REPOSITORY,
   CONTACT_MESSAGE_REPOSITORY,
   BLOG_POST_REPOSITORY,
-  PRICING_PLAN_REPOSITORY,
-  PRICING_FEATURE_ROW_REPOSITORY,
   NAVIGATION_NODE_REPOSITORY,
+  BRAND_REPOSITORY,
+  MENU_ITEM_REPOSITORY,
+  BRAND_EVENT_REPOSITORY,
+  HISTORY_ENTRY_REPOSITORY,
+  LEADERSHIP_MEMBER_REPOSITORY,
+  TEAM_MEMBER_REPOSITORY,
   NOTIFICATION_PORT,
   MEDIA_STORAGE_PORT,
   MFA_VERIFIER,
@@ -49,15 +51,16 @@ import { RefreshTokenTypeOrmRepository } from './repositories/refresh-token.type
 import { RoleTypeOrmRepository } from './repositories/role.typeorm-repository';
 import { PermissionTypeOrmRepository } from './repositories/permission.typeorm-repository';
 import { AuditLogTypeOrmRepository } from './repositories/audit-log.typeorm-repository';
-import { ProjectTypeOrmRepository } from './repositories/project.typeorm-repository';
-import { SkillTypeOrmRepository } from './repositories/skill.typeorm-repository';
-import { ExperienceTypeOrmRepository } from './repositories/experience.typeorm-repository';
 import { SiteSettingTypeOrmRepository } from './repositories/site-setting.typeorm-repository';
 import { ContactMessageTypeOrmRepository } from './repositories/contact-message.typeorm-repository';
 import { BlogPostTypeOrmRepository } from './repositories/blog-post.typeorm-repository';
-import { PricingPlanTypeOrmRepository } from './repositories/pricing-plan.typeorm-repository';
-import { PricingFeatureRowTypeOrmRepository } from './repositories/pricing-feature-row.typeorm-repository';
 import { NavigationNodeTypeOrmRepository } from './repositories/navigation-node.typeorm-repository';
+import { BrandTypeOrmRepository } from './repositories/brand.typeorm-repository';
+import { MenuItemTypeOrmRepository } from './repositories/menu-item.typeorm-repository';
+import { BrandEventTypeOrmRepository } from './repositories/brand-event.typeorm-repository';
+import { HistoryEntryTypeOrmRepository } from './repositories/history-entry.typeorm-repository';
+import { LeadershipMemberTypeOrmRepository } from './repositories/leadership-member.typeorm-repository';
+import { TeamMemberTypeOrmRepository } from './repositories/team-member.typeorm-repository';
 import { BcryptPasswordHasher } from './auth/bcrypt-password-hasher';
 import { JwtTokenIssuerAdapter } from './auth/jwt-token-issuer.adapter';
 import { RedisClient } from './cache/redis/redis.client';
@@ -96,15 +99,16 @@ import { OidcIdentityAdapter } from './auth/oidc-identity.adapter';
       RolePermission,
       RefreshToken,
       AuditLog,
-      ProjectEntity,
-      SkillEntity,
-      ExperienceEntity,
       SiteSettingEntity,
       ContactMessageEntity,
       BlogPostEntity,
-      PricingPlanEntity,
-      PricingFeatureRowEntity,
       NavigationNodeEntity,
+      BrandEntity,
+      MenuItemEntity,
+      BrandEventEntity,
+      HistoryEntryEntity,
+      LeadershipMemberEntity,
+      TeamMemberEntity,
     ]),
   ],
   providers: [
@@ -125,9 +129,6 @@ import { OidcIdentityAdapter } from './auth/oidc-identity.adapter';
     { provide: ROLE_REPOSITORY, useClass: RoleTypeOrmRepository },
     { provide: PERMISSION_REPOSITORY, useClass: PermissionTypeOrmRepository },
     { provide: AUDIT_LOG_REPOSITORY, useClass: AuditLogTypeOrmRepository },
-    { provide: PROJECT_REPOSITORY, useClass: ProjectTypeOrmRepository },
-    { provide: SKILL_REPOSITORY, useClass: SkillTypeOrmRepository },
-    { provide: EXPERIENCE_REPOSITORY, useClass: ExperienceTypeOrmRepository },
     {
       provide: SITE_SETTING_REPOSITORY,
       useClass: SiteSettingTypeOrmRepository,
@@ -138,17 +139,21 @@ import { OidcIdentityAdapter } from './auth/oidc-identity.adapter';
     },
     { provide: BLOG_POST_REPOSITORY, useClass: BlogPostTypeOrmRepository },
     {
-      provide: PRICING_PLAN_REPOSITORY,
-      useClass: PricingPlanTypeOrmRepository,
-    },
-    {
-      provide: PRICING_FEATURE_ROW_REPOSITORY,
-      useClass: PricingFeatureRowTypeOrmRepository,
-    },
-    {
       provide: NAVIGATION_NODE_REPOSITORY,
       useClass: NavigationNodeTypeOrmRepository,
     },
+    { provide: BRAND_REPOSITORY, useClass: BrandTypeOrmRepository },
+    { provide: MENU_ITEM_REPOSITORY, useClass: MenuItemTypeOrmRepository },
+    { provide: BRAND_EVENT_REPOSITORY, useClass: BrandEventTypeOrmRepository },
+    {
+      provide: HISTORY_ENTRY_REPOSITORY,
+      useClass: HistoryEntryTypeOrmRepository,
+    },
+    {
+      provide: LEADERSHIP_MEMBER_REPOSITORY,
+      useClass: LeadershipMemberTypeOrmRepository,
+    },
+    { provide: TEAM_MEMBER_REPOSITORY, useClass: TeamMemberTypeOrmRepository },
     { provide: PASSWORD_HASHER, useClass: BcryptPasswordHasher },
     { provide: TOKEN_ISSUER, useClass: JwtTokenIssuerAdapter },
     {
@@ -215,15 +220,16 @@ import { OidcIdentityAdapter } from './auth/oidc-identity.adapter';
     ROLE_REPOSITORY,
     PERMISSION_REPOSITORY,
     AUDIT_LOG_REPOSITORY,
-    PROJECT_REPOSITORY,
-    SKILL_REPOSITORY,
-    EXPERIENCE_REPOSITORY,
     SITE_SETTING_REPOSITORY,
     CONTACT_MESSAGE_REPOSITORY,
     BLOG_POST_REPOSITORY,
-    PRICING_PLAN_REPOSITORY,
-    PRICING_FEATURE_ROW_REPOSITORY,
     NAVIGATION_NODE_REPOSITORY,
+    BRAND_REPOSITORY,
+    MENU_ITEM_REPOSITORY,
+    BRAND_EVENT_REPOSITORY,
+    HISTORY_ENTRY_REPOSITORY,
+    LEADERSHIP_MEMBER_REPOSITORY,
+    TEAM_MEMBER_REPOSITORY,
     PASSWORD_HASHER,
     TOKEN_ISSUER,
     TOKEN_BLACKLIST,

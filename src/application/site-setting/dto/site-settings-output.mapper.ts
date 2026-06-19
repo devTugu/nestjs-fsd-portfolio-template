@@ -7,6 +7,8 @@ export interface SiteSettingsOutput {
   footer: SiteSettings['footer'];
   seo: SiteSettings['seo'];
   contactInfo: SiteSettings['contactInfo'];
+  theme: SiteSettings['theme'];
+  about: SiteSettings['about'];
   updatedAt: string;
 }
 
@@ -20,6 +22,8 @@ export function toSiteSettingsOutput(
     footer: settings.footer,
     seo: settings.seo,
     contactInfo: settings.contactInfo,
+    theme: settings.theme,
+    about: settings.about,
     updatedAt: settings.updatedAt.toISOString(),
   };
 }

@@ -2,17 +2,17 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from '@domain/user/repositories/user.repository.interface';
 import { IRoleRepository } from '@domain/authorization/repositories/role.repository.interface';
 import { IPermissionRepository } from '@domain/authorization/repositories/permission.repository.interface';
-import { IProjectRepository } from '@domain/project/repositories/project.repository.interface';
-import { ISkillRepository } from '@domain/skill/repositories/skill.repository.interface';
-import { IExperienceRepository } from '@domain/experience/repositories/experience.repository.interface';
+import { IBrandRepository } from '@domain/brand/repositories/brand.repository.interface';
+import { IHistoryEntryRepository } from '@domain/history/repositories/history-entry.repository.interface';
+import { IBlogPostRepository } from '@domain/blog/repositories/blog-post.repository.interface';
 import { IContactMessageRepository } from '@domain/contact/repositories/contact-message.repository.interface';
 import {
+  BLOG_POST_REPOSITORY,
+  BRAND_REPOSITORY,
   CONTACT_MESSAGE_REPOSITORY,
-  EXPERIENCE_REPOSITORY,
+  HISTORY_ENTRY_REPOSITORY,
   PERMISSION_REPOSITORY,
-  PROJECT_REPOSITORY,
   ROLE_REPOSITORY,
-  SKILL_REPOSITORY,
   USER_REPOSITORY,
 } from '@shared/constants/tokens';
 import { DashboardStatsOutput } from '../dto/dashboard-stats.output';
@@ -21,9 +21,9 @@ const PERMISSION_MAP = {
   users: 'USER_READ',
   roles: 'ROLE_READ',
   permissions: 'PERMISSION_READ',
-  projects: 'PROJECT_READ',
-  skills: 'SKILL_READ',
-  experiences: 'EXPERIENCE_READ',
+  brands: 'BRAND_READ',
+  history: 'HISTORY_READ',
+  news: 'BLOG_READ',
   contactMessages: 'CONTACT_READ',
 } as const;
 
@@ -34,10 +34,11 @@ export class GetDashboardStatsUseCase {
     @Inject(ROLE_REPOSITORY) private readonly roles: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permissions: IPermissionRepository,
-    @Inject(PROJECT_REPOSITORY) private readonly projects: IProjectRepository,
-    @Inject(SKILL_REPOSITORY) private readonly skills: ISkillRepository,
-    @Inject(EXPERIENCE_REPOSITORY)
-    private readonly experiences: IExperienceRepository,
+    @Inject(BRAND_REPOSITORY) private readonly brands: IBrandRepository,
+    @Inject(HISTORY_ENTRY_REPOSITORY)
+    private readonly history: IHistoryEntryRepository,
+    @Inject(BLOG_POST_REPOSITORY)
+    private readonly blogPosts: IBlogPostRepository,
     @Inject(CONTACT_MESSAGE_REPOSITORY)
     private readonly contactMessages: IContactMessageRepository,
   ) {}
@@ -71,26 +72,26 @@ export class GetDashboardStatsUseCase {
       );
     }
 
-    if (allowed.has(PERMISSION_MAP.projects)) {
+    if (allowed.has(PERMISSION_MAP.brands)) {
       tasks.push(
-        this.projects.findAll({ page: 1, limit: 1 }).then((result) => {
-          stats.projects = result.total;
+        this.brands.findAll({ page: 1, limit: 1 }).then((result) => {
+          stats.brands = result.total;
         }),
       );
     }
 
-    if (allowed.has(PERMISSION_MAP.skills)) {
+    if (allowed.has(PERMISSION_MAP.history)) {
       tasks.push(
-        this.skills.findAll({ page: 1, limit: 1 }).then((result) => {
-          stats.skills = result.total;
+        this.history.findAll({ page: 1, limit: 1 }).then((result) => {
+          stats.history = result.total;
         }),
       );
     }
 
-    if (allowed.has(PERMISSION_MAP.experiences)) {
+    if (allowed.has(PERMISSION_MAP.news)) {
       tasks.push(
-        this.experiences.findAll({ page: 1, limit: 1 }).then((result) => {
-          stats.experiences = result.total;
+        this.blogPosts.findAll({ page: 1, limit: 1 }).then((result) => {
+          stats.news = result.total;
         }),
       );
     }

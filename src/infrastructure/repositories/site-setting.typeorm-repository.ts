@@ -47,6 +47,12 @@ export class SiteSettingTypeOrmRepository implements ISiteSettingRepository {
           keywords: { ...DEFAULT_SITE_SETTINGS.seo.keywords },
         },
         contactInfo: { ...DEFAULT_SITE_SETTINGS.contactInfo },
+        theme: { ...DEFAULT_SITE_SETTINGS.theme },
+        about: {
+          ...DEFAULT_SITE_SETTINGS.about,
+          values: [...DEFAULT_SITE_SETTINGS.about.values],
+          stats: [...DEFAULT_SITE_SETTINGS.about.stats],
+        },
       });
     }
 
@@ -56,6 +62,15 @@ export class SiteSettingTypeOrmRepository implements ISiteSettingRepository {
     if (data.seo) entity.seo = { ...entity.seo, ...data.seo };
     if (data.contactInfo) {
       entity.contactInfo = { ...entity.contactInfo, ...data.contactInfo };
+    }
+    if (data.theme) entity.theme = { ...entity.theme, ...data.theme };
+    if (data.about) {
+      entity.about = {
+        ...entity.about,
+        ...data.about,
+        values: data.about.values ?? entity.about?.values ?? [],
+        stats: data.about.stats ?? entity.about?.stats ?? [],
+      };
     }
 
     const saved = await this.repository.save(entity);

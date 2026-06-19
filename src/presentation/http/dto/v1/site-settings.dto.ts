@@ -56,6 +56,17 @@ class HeroSectionDto {
   @IsOptional()
   @IsString()
   imageUrl?: string | null;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  secondaryCtaLabel?: LocalizedTextDto;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  secondaryCtaUrl?: string;
 }
 
 class HeaderSectionDto {
@@ -149,8 +160,79 @@ class ContactInfoSectionDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  address?: LocalizedTextDto | null;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  workHours?: LocalizedTextDto | null;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsBoolean()
   showForm?: boolean;
+}
+
+class ThemeSectionDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  brandColor?: string | null;
+}
+
+class AboutValueDto {
+  @IsString()
+  icon: string;
+
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  label: LocalizedTextDto;
+}
+
+class AboutStatDto {
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  label: LocalizedTextDto;
+
+  @IsString()
+  value: string;
+}
+
+class AboutSectionDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  brief?: LocalizedTextDto;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  mission?: LocalizedTextDto;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => LocalizedTextDto)
+  vision?: LocalizedTextDto;
+
+  @ApiPropertyOptional({ type: [AboutValueDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => AboutValueDto)
+  values?: AboutValueDto[];
+
+  @ApiPropertyOptional({ type: [AboutStatDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => AboutStatDto)
+  stats?: AboutStatDto[];
 }
 
 export class UpdateSiteSettingsDto {
@@ -183,6 +265,18 @@ export class UpdateSiteSettingsDto {
   @ValidateNested()
   @Type(() => ContactInfoSectionDto)
   contactInfo?: ContactInfoSectionDto;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ThemeSectionDto)
+  theme?: ThemeSectionDto;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => AboutSectionDto)
+  about?: AboutSectionDto;
 }
 
 export { LocalizedContentDto };

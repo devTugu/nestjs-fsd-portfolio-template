@@ -35,7 +35,7 @@ export const envValidationSchema = Joi.object({
     then: Joi.string().uri().required(),
     otherwise: Joi.string().uri().optional(),
   }),
-  OTEL_SERVICE_NAME: Joi.string().default('portfolio-api'),
+  OTEL_SERVICE_NAME: Joi.string().default('re-cms-api'),
 
   OAUTH_ENABLED: Joi.string().valid('true', 'false').default('false'),
   OAUTH_ISSUER: Joi.when('OAUTH_ENABLED', {
@@ -59,10 +59,10 @@ export const envValidationSchema = Joi.object({
     otherwise: Joi.string().uri().optional(),
   }),
 
-  APP_DISPLAY_NAME: Joi.string().default('Portfolio Platform'),
-  MFA_ISSUER: Joi.string().default('Portfolio Admin'),
-  CONTACT_EMAIL_SUBJECT_PREFIX: Joi.string().default('[Portfolio Contact]'),
-  SEED_BRAND_NAME: Joi.string().default('Portfolio'),
+  APP_DISPLAY_NAME: Joi.string().default('RE CMS'),
+  MFA_ISSUER: Joi.string().default('RE CMS Admin'),
+  CONTACT_EMAIL_SUBJECT_PREFIX: Joi.string().default('[RE CMS Contact]'),
+  SEED_BRAND_NAME: Joi.string().default('Demo Group'),
   SEED_CONTACT_EMAIL: Joi.string().email().default('hello@example.com'),
   MFA_ENCRYPTION_KEY: Joi.string().min(32).optional(),
   MFA_REQUIRED_ROLES: Joi.string().default('SUPER_ADMIN'),

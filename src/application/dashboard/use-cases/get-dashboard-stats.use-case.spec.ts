@@ -4,9 +4,9 @@ describe('GetDashboardStatsUseCase', () => {
   const users = { findAll: jest.fn() };
   const roles = { findAll: jest.fn() };
   const permissions = { findAll: jest.fn() };
-  const projects = { findAll: jest.fn() };
-  const skills = { findAll: jest.fn() };
-  const experiences = { findAll: jest.fn() };
+  const brands = { findAll: jest.fn() };
+  const history = { findAll: jest.fn() };
+  const blogPosts = { findAll: jest.fn() };
   const contactMessages = { findAll: jest.fn() };
 
   let useCase: GetDashboardStatsUseCase;
@@ -17,20 +17,20 @@ describe('GetDashboardStatsUseCase', () => {
       users as never,
       roles as never,
       permissions as never,
-      projects as never,
-      skills as never,
-      experiences as never,
+      brands as never,
+      history as never,
+      blogPosts as never,
       contactMessages as never,
     );
   });
 
   it('returns only counts for granted read permissions', async () => {
     users.findAll.mockResolvedValue({ total: 3 });
-    projects.findAll.mockResolvedValue({ total: 7 });
+    brands.findAll.mockResolvedValue({ total: 7 });
 
-    const result = await useCase.execute(['USER_READ', 'PROJECT_READ']);
+    const result = await useCase.execute(['USER_READ', 'BRAND_READ']);
 
-    expect(result).toEqual({ users: 3, projects: 7 });
+    expect(result).toEqual({ users: 3, brands: 7 });
     expect(roles.findAll).not.toHaveBeenCalled();
   });
 

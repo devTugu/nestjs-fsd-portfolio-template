@@ -1,47 +1,79 @@
 # Security
 
+Security controls for the regulated-enterprise RE template.
+
 ## Authentication
 
-- **Access tokens**: JWT, short-lived (`JWT_ACCESS_EXPIRES_IN`, default 15m).
-- **Refresh tokens**: JWT stored as SHA-256 hash in MySQL; rotation on each refresh.
-- **Logout**: Access token JTI blacklisted (Redis or in-memory); refresh token revoked.
+| Mechanism | Details |
+|-----------|---------|
+| JWT access token | Short-lived (`JWT_ACCESS_EXPIRES_IN`, default `15m`) |
+| Refresh token | Rotated on use (`JWT_REFRESH_EXPIRES_IN`, default `7d`); Redis blacklist on logout |
+| Login throttle | `LOGIN_THROTTLE_TTL` / `LOGIN_THROTTLE_LIMIT` (default 5/min) |
+| Password hashing | bcrypt |
+
+Required secrets: `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` (min 32 chars each).
+
+## Multi-factor authentication (MFA)
+
+TOTP-based MFA with optional enrollment during login.
+
+| Env | Purpose |
+|-----|---------|
+| `MFA_ENCRYPTION_KEY` | Encrypt TOTP secrets (min 32 chars) |
+| `MFA_ISSUER` | Display name in authenticator app |
+| `MFA_REQUIRED_ROLES` | Comma-separated roles requiring MFA (default `SUPER_ADMIN`) |
+
+Endpoints: `/auth/mfa/*`. Frontend handles inline MFA on `/sign-in` via BFF routes.
+
+## OIDC (optional)
+
+Set `OAUTH_ENABLED=true` and configure `OAUTH_ISSUER`, `OAUTH_CLIENT_ID`, `OAUTH_CLIENT_SECRET`, `OAUTH_CALLBACK_URL`.
+
+Compatible with Keycloak, Auth0, and other OIDC providers.
 
 ## Authorization (RBAC)
 
-- Permissions are checked via `@Permissions()` and `PermissionsGuard`.
-- Permission codes are seeded in [`permissions.const.ts`](../src/infrastructure/database/seed/permissions.const.ts).
-- Cached per user in Redis (or in-memory when `REDIS_ENABLED=false`).
+Every admin route requires a permission code (e.g. `BRAND_UPDATE`). `PermissionsGuard` checks codes from the user's roles. Permission list cached in Redis when `REDIS_ENABLED=true` (`PERMISSION_CACHE_TTL_SEC`).
 
 ## Rate limiting
 
-- Global throttle: `THROTTLE_TTL` / `THROTTLE_LIMIT`.
-- Login: 5 requests per minute per IP (`@Throttle` on login endpoint).
-- Refresh: 10 requests per minute.
+| Scope | Env vars | Default |
+|-------|----------|---------|
+| Global | `THROTTLE_TTL`, `THROTTLE_LIMIT` | 60 req/min |
+| Contact form | `CONTACT_THROTTLE_*` | 5 req/min |
 
-## HTTP hardening
+Storage: Redis when enabled, otherwise in-memory.
 
-- Helmet security headers
-- CORS restricted to `CORS_ORIGIN`
-- Validation pipe: whitelist + forbid unknown properties
-- Trust proxy enabled for correct client IP behind reverse proxy
+## CORS
 
-## Secrets
+`CORS_ORIGIN` — set to your Next.js frontend origin in production.
 
-- Never commit `.env`
-- JWT secrets minimum 32 characters (enforced at startup)
-- Use different secrets per environment
+## Audit logging
 
-## Audit
+Mutating admin actions are recorded in `audit_logs` via `AuditInterceptor`. Read via `GET /admin/audit-logs` (`AUDIT_READ`).
 
-Mutating API calls and login/logout are recorded in `audit_logs`. See [ADR 003](adr/003-audit-logging.md).
+Retention: `AUDIT_PURGE_ENABLED`, `AUDIT_RETENTION_DAYS` (default 90). See [Operations](OPERATIONS.md).
 
-Audit failures do not block requests.
+## GDPR
 
-## Production checklist
+| Endpoint | Permission | Action |
+|----------|------------|--------|
+| `GET /users/:id/export` | `USER_READ` | Export user data |
+| `POST /users/:id/anonymize` | `USER_DELETE` | Anonymize PII |
 
-- [ ] `SWAGGER_ENABLED=false`
-- [ ] `REDIS_ENABLED=true`
-- [ ] Strong unique JWT secrets
-- [ ] TLS termination at reverse proxy
-- [ ] Database credentials least privilege
-- [ ] Regular dependency audits (`npm audit`)
+## Input validation
+
+- Global `ValidationPipe` (whitelist, forbidNonWhitelisted, transform)
+- Contact honeypot field `website` (bots only)
+- Localized content validated at DTO layer
+
+## Transport and headers
+
+- HTTPS required in production
+- Request ID middleware for trace correlation
+- Swagger disabled by default (`SWAGGER_ENABLED=false`)
+
+## Related
+
+- [Compliance](COMPLIANCE.md) — SOC2 mapping
+- [ADR 003](adr/003-security-identity.md) — identity decisions

@@ -10,7 +10,7 @@ export class TotpMfaAdapter implements IMfaVerifier {
 
   generateSecret(email: string): { secret: string; otpauthUrl: string } {
     const secret = authenticator.generateSecret();
-    const issuer = this.config.get<string>('MFA_ISSUER', 'Portfolio Admin');
+    const issuer = this.config.get<string>('MFA_ISSUER', 'RE CMS Admin');
     const otpauthUrl = authenticator.keyuri(email, issuer, secret);
     return { secret, otpauthUrl };
   }

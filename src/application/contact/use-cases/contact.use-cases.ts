@@ -52,6 +52,13 @@ export class SubmitContactMessageUseCase {
       message: input.message,
     });
 
+    void this.notifications.sendContactAutoReply({
+      name: input.name,
+      email: input.email,
+      subject: input.subject,
+      message: input.message,
+    });
+
     return toContactMessageOutput(saved);
   }
 }

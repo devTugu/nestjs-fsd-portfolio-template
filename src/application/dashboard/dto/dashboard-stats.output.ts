@@ -9,8 +9,8 @@ export interface DashboardStatsOutput {
   users?: number;
   roles?: number;
   permissions?: number;
-  projects?: number;
-  skills?: number;
-  experiences?: number;
+  brands?: number;
+  history?: number;
+  news?: number;
   contactMessages?: DashboardContactStats;
 }

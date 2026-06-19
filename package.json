@@ -1,7 +1,7 @@
 {
   "name": "nestjs-fsd-portfolio-template",
-  "version": "2.3.0",
-  "description": "Production-ready NestJS Portfolio CMS API — Clean Architecture, JWT, RBAC, Redis, MySQL. Public content + admin CMS for portfolio websites.",
+  "version": "3.0.0",
+  "description": "Production-ready NestJS Multi-brand RE CMS API — Clean Architecture, JWT, RBAC, Redis, MySQL. Public content + admin CMS for restaurant/event conglomerates.",
   "author": "devTugu (Tuguldur Unurtsetseg)",
   "private": false,
   "license": "MIT",
@@ -15,7 +15,9 @@
   "homepage": "https://github.com/devTugu/nestjs-fsd-portfolio-template#readme",
   "keywords": [
     "nestjs",
-    "portfolio",
+    "multi-brand",
+    "restaurant",
+    "enterprise",
     "cms",
     "clean-architecture",
     "rbac",
@@ -46,8 +48,7 @@
     "migration:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d data-source.ts",
     "migration:run:prod": "node dist/infrastructure/database/run-migrations.js",
     "seed": "ts-node -r tsconfig-paths/register src/infrastructure/database/seed/run-seed.ts",
-    "seed:prod": "node dist/infrastructure/database/seed/run-seed.js",
-    "docs:pitch-pdf": "marp docs/pitch/ARCHITECTURE-PITCH.md -o docs/pitch/ARCHITECTURE-PITCH.pdf --allow-local-files --no-stdin"
+    "seed:prod": "node dist/infrastructure/database/seed/run-seed.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1068.0",

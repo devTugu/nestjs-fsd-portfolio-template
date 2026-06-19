@@ -1,4 +1,4 @@
-# Portfolio Stack Helm Chart
+# RE CMS Stack Helm Chart
 
 Deploys the NestJS API and Next.js admin frontend as a single release.
 
@@ -12,10 +12,10 @@ Deploys the NestJS API and Next.js admin frontend as a single release.
 ## Install
 
 ```bash
-helm lint deploy/helm/portfolio-stack
+helm lint deploy/helm/re-cms-stack
 
-helm upgrade --install portfolio-staging deploy/helm/portfolio-stack \
-  --namespace portfolio-staging --create-namespace \
+helm upgrade --install re-cms-staging deploy/helm/re-cms-stack \
+  --namespace re-cms-staging --create-namespace \
   --set api.image.tag=v2.3.0 \
   --set frontend.image.tag=v2.3.0
 ```
@@ -53,21 +53,27 @@ Frontend OTEL/Sentry: add to frontend Secret (see `templates/frontend-secrets.ya
 ## Upgrade / rollback
 
 ```bash
-helm upgrade portfolio-staging deploy/helm/portfolio-stack --set api.image.tag=v2.2.2
-helm rollback portfolio-staging <revision>
+helm upgrade re-cms-staging deploy/helm/re-cms-stack --set api.image.tag=v3.0.0
+helm rollback re-cms-staging <revision>
 ```
+
+## Migrating from `portfolio-stack`
+
+Previous releases used `deploy/helm/portfolio-stack` and image names `portfolio-api` / `portfolio-admin`. Install `re-cms-stack` with updated image tags (`re-cms-api`, `re-cms-admin`) or migrate the release in place by updating chart path and values.
+
+Keycloak local dev realm id remains `portfolio` for backward compatibility; OAuth client id is `re-cms-admin` (was `portfolio-admin`). Set `OAUTH_CLIENT_ID=re-cms-admin` in API `.env`.
 
 ## Validation (CI)
 
 ```bash
-helm lint deploy/helm/portfolio-stack
-helm template portfolio-test deploy/helm/portfolio-stack \
+helm lint deploy/helm/re-cms-stack
+helm template re-cms-test deploy/helm/re-cms-stack \
   --set api.enabled=true \
   --set frontend.enabled=true > /dev/null
 ```
 
 ## Related
 
-- [RUNBOOK.md](../../docs/RUNBOOK.md)
-- [OBSERVABILITY.md](../../docs/OBSERVABILITY.md)
+- [Operations](../../docs/OPERATIONS.md)
+- [Deployment](../../docs/DEPLOYMENT.md)
 - Frontend health route: `app/api/health/route.ts`

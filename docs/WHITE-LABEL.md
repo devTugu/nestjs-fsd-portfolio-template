@@ -1,95 +1,49 @@
-# White-label configuration
+# White Label
 
-Configure project name, logos, SEO, MFA issuer, and email branding **without code changes**.
+Customize branding without code changes.
 
-Paired frontend guide: [nextjs-fsd-portfolio-template/docs/WHITE-LABEL.md](https://github.com/devTugu/nextjs-fsd-portfolio-template/blob/main/docs/WHITE-LABEL.md)
+## Deploy-time brand
 
-## Quick start (5 minutes)
+| Env | Purpose |
+|-----|---------|
+| `SEED_BRAND_NAME` | Demo company name in seed data (default `Portfolio`) |
+| `SEED_CONTACT_EMAIL` | Contact email in seed (default `hello@example.com`) |
+| `APP_DISPLAY_NAME` | Swagger / internal display name |
+| `MFA_ISSUER` | Authenticator app issuer label |
+| `CONTACT_EMAIL_SUBJECT_PREFIX` | Email subject prefix for contact notifications |
 
-1. Copy env templates:
+## CMS brand (runtime)
 
-```bash
-cp .env.example .env
-cp ../nextjs-fsd-portfolio-template/.env.example ../nextjs-fsd-portfolio-template/.env.local
-```
+All public-facing copy is editable via site settings and CMS entities:
 
-2. Set brand env vars (both repos):
+| Surface | Source |
+|---------|--------|
+| Site name, logos, favicon | `site_settings.header` |
+| Hero copy, CTAs | `site_settings.hero` |
+| About brief, mission, vision | `site_settings.about` |
+| Brand accent color | `site_settings.theme.brandColor` |
+| Footer, social links | `site_settings.footer` |
+| SEO metadata | `site_settings.seo` |
+| Navigation labels | `navigation_nodes` (localized) |
+| Per-brand content | `brands`, `menu_items`, `brand_events` |
 
-| Variable | Example | Purpose |
-|----------|---------|---------|
-| `APP_DISPLAY_NAME` | `Acme Platform` | Swagger title, contact email subject prefix |
-| `MFA_ISSUER` | `Acme Admin` | Authenticator app label |
-| `SEED_BRAND_NAME` | `Acme` | Default CMS site name on seed |
-| `SEED_CONTACT_EMAIL` | `hello@acme.com` | Default contact email on seed |
-| `NEXT_PUBLIC_APP_NAME` | `Acme Admin` | Dashboard + sign-in title (frontend) |
-| `NEXT_PUBLIC_BRAND_NAME` | `Acme` | Public fallback when CMS empty (frontend) |
-| `NEXT_PUBLIC_SITE_URL` | `https://acme.com` | Canonical URL / metadataBase (frontend) |
+The Next.js frontend resolves brand context: CMS `siteName` → `NEXT_PUBLIC_BRAND_NAME` → fallback `"Your Site"`.
 
-3. Run migrations + seed:
+## Demo seed
 
-```bash
-npm run migration:run && npm run seed
-```
+`npm run seed` loads multi-brand demo content from `multi-brand-seed.const.ts`:
 
-4. Upload logos in **Dashboard → Site settings → Header** (marketing logo, dark logo, admin logo, favicon).
+- 4 brands: `nomad-kitchen`, `steppe-grill`, `skyline-events`, `heritage-hall`
+- Menu items, events, history, leadership, team, news, navigation
 
-## Three-tier model
+Replace demo content in admin after fork, or customize seed constants before first run.
 
-| Tier | Mechanism | Examples |
-|------|-----------|----------|
-| **Deploy-time** | `.env`, Helm `brand.*` values | `APP_DISPLAY_NAME`, `MFA_ISSUER`, `NEXT_PUBLIC_APP_NAME` |
-| **Runtime CMS** | Site settings API + admin UI | `siteName`, `logoUrl`, SEO, hero, footer |
-| **i18n chrome** | `messages/*.json` with `{brandName}` | Marketing fallbacks, auth hero copy |
+## i18n
 
-**Resolution order:** CMS value → env fallback → generic i18n default.
+CMS fields support `en` and `mn`. Add locales by extending `LocalizedText` schema and frontend i18n config.
 
-## Backend env reference
+## Related
 
-| Key | Default | Used by |
-|-----|---------|---------|
-| `APP_DISPLAY_NAME` | `Portfolio Platform` | Swagger (`/docs`) |
-| `CONTACT_EMAIL_SUBJECT_PREFIX` | `[Portfolio Contact]` | Contact notification emails |
-| `MFA_ISSUER` | `Portfolio Admin` | TOTP QR label |
-| `SEED_BRAND_NAME` | `Portfolio` | `npm run seed` site settings |
-| `SEED_CONTACT_EMAIL` | `hello@example.com` | Seed contact email |
-
-## CMS branding fields
-
-`GET/PATCH /api/v1/admin/site-settings` header section:
-
-- `logoUrl` — marketing header (light)
-- `logoDarkUrl` — marketing header (dark mode)
-- `adminLogoUrl` — dashboard sidebar
-- `faviconUrl` — public site favicon override
-- `siteName` — localized public brand name (EN/MN)
-
-## Helm
-
-Override `brand` block in [`deploy/helm/portfolio-stack/values.yaml`](../deploy/helm/portfolio-stack/values.yaml):
-
-```yaml
-brand:
-  appDisplayName: Acme Platform
-  mfaIssuer: Acme Admin
-  nextPublicAppName: Acme Admin
-  nextPublicBrandName: Acme
-  nextPublicSiteUrl: https://acme.example.com
-```
-
-## Logo assets
-
-- Prefer SVG or PNG with transparent background
-- Recommended header height: 32px (max width ~140px)
-- Provide `logoDarkUrl` when light logo is invisible on dark backgrounds
-- Admin sidebar logo: square or compact mark (~32×32)
-
-## Checklist before go-live
-
-- [ ] All brand env vars set in API + frontend services
-- [ ] `SEED_BRAND_NAME` updated before first seed (or patch site settings in admin)
-- [ ] Logos uploaded in site settings
-- [ ] `NEXT_PUBLIC_SITE_URL` matches production domain
-- [ ] MFA issuer shows correct company name in authenticator app
-- [ ] Contact form email subject uses `CONTACT_EMAIL_SUBJECT_PREFIX`
-
-See [ADR 014](./adr/014-white-label-brand-configuration.md) for design rationale.
+- [CMS Reference](CMS-REFERENCE.md)
+- [ADR 005](adr/005-white-label.md)
+- Frontend [White Label](https://github.com/devTugu/nextjs-fsd-portfolio-template/blob/main/docs/WHITE-LABEL.md)

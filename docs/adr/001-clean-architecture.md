@@ -1,4 +1,4 @@
-# ADR 001: Clean Architecture Layers
+# ADR 001: Clean Architecture
 
 ## Status
 
@@ -6,19 +6,29 @@ Accepted
 
 ## Context
 
-The API requires maintainable boundaries, testable business logic, and infrastructure swapability (MySQL, Redis, JWT).
+The API serves as a sellable regulated-enterprise template. Architecture must be testable, framework-agnostic at the core, and teachable.
 
 ## Decision
 
-Adopt four layers with dependency rule pointing inward:
+Adopt four layers with strict dependency direction:
 
-- `domain` — entities, repository interfaces, domain services (no Nest/TypeORM)
-- `application` — use cases, ports, application DTOs
-- `infrastructure` — TypeORM, Redis, JWT adapters, mappers
-- `presentation` — HTTP controllers, guards, filters (Nest-specific)
+```
+presentation → application → domain ← infrastructure
+```
+
+- **Domain:** pure entities, repository interfaces, domain services
+- **Application:** use cases orchestrate domain logic via ports
+- **Infrastructure:** TypeORM repositories, Redis, JWT, email, S3
+- **Presentation:** NestJS controllers, guards, DTOs
+
+Each bounded context (brand, history, auth, etc.) follows: domain entity → repository interface → use case → TypeORM repository → controller.
 
 ## Consequences
 
-- More files and boilerplate; offset by testability and clear ownership
-- Nest modules live in `presentation/http/modules` as composition root per bounded context
-- Legacy folders (`src/modules`, `src/common`, etc.) were removed; use the layered tree only
+**Positive:** Unit tests mock repositories at use-case level; business rules stay in domain/application.
+
+**Negative:** More files per feature than a simple CRUD module. Acceptable for template quality.
+
+## Related
+
+- [Architecture](../ARCHITECTURE.md)

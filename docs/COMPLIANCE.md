@@ -1,27 +1,65 @@
-# Compliance Mapping (SOC2-ready foundation)
+# Compliance
 
-| Control area | Implementation | Evidence |
-|--------------|----------------|----------|
-| Access control (CC6.1) | JWT + RBAC + TOTP MFA + OIDC SSO + SUPER_ADMIN enrollment gate | `PermissionsGuard`, ADR 009, `e2e/mfa.spec.ts`, `e2e/permissions.spec.ts` |
-| CSRF (CC6.1) | BFF CSRF on all mutating routes | `bff-csrf.ts`, `e2e/csrf.spec.ts` |
-| Audit logging (CC7.2) | Write + read API + read meta-audit | `audit_logs`, `/admin/audit-logs`, `AUDIT_LOG_READ` action |
-| Encryption in transit | TLS at ingress | Helm ingress TLS, HSTS on frontend |
-| Encryption at rest | Operator-managed DB/storage | Railway/AWS RDS encryption |
-| Change management | CI/CD + PR reviews | `.github/workflows/ci.yml`, `cd.yml` |
-| Vulnerability mgmt | npm audit, Trivy, Dependabot | CI jobs, `.github/dependabot.yml` |
-| Monitoring | OTEL traces + structured logs | `tracing.ts`, `instrumentation.ts` |
-| Data retention | Audit retention policy | [AUDIT-RETENTION.md](AUDIT-RETENTION.md) |
-| GDPR | Export + anonymize endpoints | `/admin/users/:id/export`, `/anonymize` |
+SOC2-oriented control mapping and regulated-enterprise verification checklist for v3.
 
-**Organizational controls** (pen test schedule, DPA, incident response runbooks) remain operator responsibility.
+## Control summary
 
-## E2E evidence paths (frontend)
+| # | Control area | Implementation |
+|---|--------------|----------------|
+| 1 | Access control | RBAC with permission codes per route |
+| 2 | Authentication | JWT + refresh rotation + optional MFA |
+| 3 | Session management | httpOnly cookies via Next.js BFF (frontend) |
+| 4 | Password policy | Min 8 chars; bcrypt hashing |
+| 5 | MFA | TOTP; role-based requirement (`MFA_REQUIRED_ROLES`) |
+| 6 | OIDC federation | Optional `OAUTH_ENABLED` |
+| 7 | Audit trail | `audit_logs` + `AuditInterceptor` |
+| 8 | Audit retention | Configurable purge (`AUDIT_RETENTION_DAYS`) |
+| 9 | GDPR export | `GET /users/:id/export` |
+| 10 | GDPR erasure | `POST /users/:id/anonymize` |
+| 11 | Rate limiting | Global + login + contact throttles |
+| 12 | Input validation | class-validator DTOs, honeypot |
+| 13 | CORS | Origin allowlist |
+| 14 | Secrets management | Env vars; never committed |
+| 15 | TLS | HTTPS in production |
+| 16 | Health probes | `/health/live`, `/health/ready` |
+| 17 | Structured logging | Winston JSON logs |
+| 18 | Error tracking | Sentry opt-in |
+| 19 | Distributed tracing | OpenTelemetry opt-in |
+| 20 | Database encryption | `DB_SSL` for managed MySQL |
+| 21 | Soft delete | CMS entities use `deleted_at` |
+| 22 | Draft/publish | `isPublished` gates public API |
+| 23 | Request tracing | `requestId` on every response |
+| 24 | Permission cache TTL | Redis-backed with TTL |
+| 25 | Refresh token blacklist | Redis on logout |
+| 26 | Contact PII handling | Admin inbox; delete capability |
+| 27 | Media upload auth | JWT + permissions on `/admin/media/upload` |
+| 28 | Swagger disabled | Default `SWAGGER_ENABLED=false` |
+| 29 | CI verification gate | Unit tests + coverage thresholds |
 
-| Spec | SOC2 control |
-|------|--------------|
-| `e2e/csrf.spec.ts` | CSRF on cookie auth |
-| `e2e/mfa.spec.ts` | MFA step-up |
-| `e2e/permissions.spec.ts` | Least-privilege RBAC |
-| `e2e/audit-logs.spec.ts` | Audit trail access |
-| `e2e/bff-allowlist.spec.ts` | Attack surface reduction |
-| `e2e/oauth.spec.ts` | OIDC SSO (Keycloak CI) |
+## Verification gate
+
+Before production release:
+
+```bash
+npm run test          # Unit tests (application/ ≥80%, domain/ ≥80%)
+npm run build
+npm run test:e2e      # E2E including public-brands
+```
+
+Frontend pairing: run `scripts/ci-e2e.sh` on the paired Next.js repo.
+
+## Gaps (operator responsibility)
+
+| Item | Status |
+|------|--------|
+| WAF / DDoS protection | Deploy at CDN/load balancer |
+| Penetration testing | Schedule before regulated launch |
+| Data residency | Choose MySQL region per jurisdiction |
+| Backup encryption | Configure at storage provider |
+| SIEM integration | Forward Winston/OTEL to your stack |
+
+## Related
+
+- [Security](SECURITY.md)
+- [Operations](OPERATIONS.md) — audit retention
+- Frontend [Security](https://github.com/devTugu/nextjs-fsd-portfolio-template/blob/main/docs/SECURITY.md) — BFF, CSRF

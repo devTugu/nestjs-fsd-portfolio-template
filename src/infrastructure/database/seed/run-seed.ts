@@ -8,35 +8,35 @@ import {
   UserRole,
   RolePermission,
   RefreshToken,
-  ProjectEntity,
-  SkillEntity,
-  ExperienceEntity,
   SiteSettingEntity,
   BlogPostEntity,
-  PricingPlanEntity,
-  PricingFeatureRowEntity,
   NavigationNodeEntity,
+  BrandEntity,
+  MenuItemEntity,
+  BrandEventEntity,
+  HistoryEntryEntity,
+  LeadershipMemberEntity,
+  TeamMemberEntity,
 } from '../typeorm/entities';
 import {
   PERMISSION_CODES,
   SUPER_ADMIN_ROLE_NAME,
   CONTENT_MANAGER_ROLE_NAME,
-  PORTFOLIO_PERMISSION_CODES,
+  CMS_PERMISSION_CODES,
   E2E_VIEWER_PERMISSION_CODES,
   E2E_VIEWER_ROLE_NAME,
 } from './permissions.const';
-import {
-  DEMO_EXPERIENCES,
-  DEMO_PROJECTS,
-  DEMO_SKILLS,
-} from './portfolio-seed.const';
 import { buildDemoSiteSettings } from './brand-seed.util';
-import {
-  DEMO_BLOG_POSTS,
-  DEMO_PRICING_PLANS,
-  DEMO_PRICING_FEATURE_ROWS,
-} from './blog-pricing-seed.const';
+import { DEMO_BLOG_POSTS } from './blog-seed.const';
 import { DEMO_NAVIGATION_NODES } from './navigation-seed.const';
+import {
+  DEMO_BRANDS,
+  DEMO_BRAND_EVENTS,
+  DEMO_HISTORY,
+  DEMO_LEADERSHIP,
+  DEMO_MENU_ITEMS,
+  DEMO_TEAM,
+} from './multi-brand-seed.const';
 
 dotenv.config({ path: '.env' });
 
@@ -56,14 +56,15 @@ const dataSource = new DataSource({
     UserRole,
     RolePermission,
     RefreshToken,
-    ProjectEntity,
-    SkillEntity,
-    ExperienceEntity,
     SiteSettingEntity,
     BlogPostEntity,
-    PricingPlanEntity,
-    PricingFeatureRowEntity,
     NavigationNodeEntity,
+    BrandEntity,
+    MenuItemEntity,
+    BrandEventEntity,
+    HistoryEntryEntity,
+    LeadershipMemberEntity,
+    TeamMemberEntity,
   ],
   synchronize: false,
   connectTimeout: 15000,
@@ -158,14 +159,14 @@ async function runSeed(): Promise<void> {
     console.log('Created CONTENT_MANAGER role');
   }
 
-  const portfolioPerms = allPerms.filter((p) =>
-    (PORTFOLIO_PERMISSION_CODES as readonly string[]).includes(p.code),
+  const cmsPerms = allPerms.filter((p) =>
+    (CMS_PERMISSION_CODES as readonly string[]).includes(p.code),
   );
   const existingCmRp = await rolePermissionRepo.find({
     where: { roleId: contentManagerRole.id },
   });
   const existingCmPermIds = new Set(existingCmRp.map((rp) => rp.permissionId));
-  for (const p of portfolioPerms) {
+  for (const p of cmsPerms) {
     if (existingCmPermIds.has(p.id)) continue;
     await rolePermissionRepo.save(
       rolePermissionRepo.create({
@@ -175,45 +176,113 @@ async function runSeed(): Promise<void> {
     );
   }
 
-  const projectRepo = dataSource.getRepository(ProjectEntity);
-  for (const demo of DEMO_PROJECTS) {
-    const exists = await projectRepo.findOne({ where: { slug: demo.slug } });
+  const brandRepo = dataSource.getRepository(BrandEntity);
+  const brandIdBySlug = new Map<string, number>();
+  for (const demo of DEMO_BRANDS) {
+    const exists = await brandRepo.findOne({ where: { slug: demo.slug } });
     if (!exists) {
-      await projectRepo.save(
-        projectRepo.create({
+      const saved = await brandRepo.save(
+        brandRepo.create({
           ...demo,
-          publishedAt: demo.isPublished ? new Date() : null,
+          isPublished: true,
+          publishedAt: new Date(),
+          socialLinks: [],
         }),
       );
-      console.log('Created demo project:', demo.slug);
+      brandIdBySlug.set(demo.slug, saved.id);
+      console.log('Created demo brand:', demo.slug);
+    } else {
+      brandIdBySlug.set(demo.slug, exists.id);
     }
   }
 
-  const skillRepo = dataSource.getRepository(SkillEntity);
-  for (const demo of DEMO_SKILLS) {
-    const exists = await skillRepo.findOne({
-      where: { name: demo.name, category: demo.category },
+  const menuItemRepo = dataSource.getRepository(MenuItemEntity);
+  for (const demo of DEMO_MENU_ITEMS) {
+    const brandId = brandIdBySlug.get(demo.brandSlug);
+    if (!brandId) continue;
+    const exists = await menuItemRepo.findOne({
+      where: { brandId, name: demo.name },
     });
     if (!exists) {
-      await skillRepo.save(skillRepo.create({ ...demo, isPublished: true }));
-      console.log('Created demo skill:', demo.name);
+      await menuItemRepo.save(
+        menuItemRepo.create({
+          brandId,
+          category: demo.category,
+          name: demo.name,
+          description: demo.description,
+          price: demo.price,
+          isAvailable: true,
+          isPublished: true,
+          sortOrder: demo.sortOrder,
+        }),
+      );
+      console.log('Created demo menu item:', demo.name.en);
     }
   }
 
-  const experienceRepo = dataSource.getRepository(ExperienceEntity);
-  for (const demo of DEMO_EXPERIENCES) {
-    const exists = await experienceRepo.findOne({
-      where: { company: demo.company, role: demo.role },
+  const brandEventRepo = dataSource.getRepository(BrandEventEntity);
+  for (const demo of DEMO_BRAND_EVENTS) {
+    const brandId = brandIdBySlug.get(demo.brandSlug);
+    if (!brandId) continue;
+    const exists = await brandEventRepo.findOne({
+      where: { brandId, title: demo.title },
     });
     if (!exists) {
-      await experienceRepo.save(
-        experienceRepo.create({
-          ...demo,
-          startDate: new Date(demo.startDate),
-          endDate: demo.endDate ? new Date(demo.endDate) : null,
+      await brandEventRepo.save(
+        brandEventRepo.create({
+          brandId,
+          title: demo.title,
+          description: demo.description,
+          eventDate: demo.eventDate,
+          location: demo.location,
+          isPublished: true,
+          sortOrder: demo.sortOrder,
         }),
       );
-      console.log('Created demo experience:', demo.company);
+      console.log('Created demo brand event:', demo.title.en);
+    }
+  }
+
+  const historyRepo = dataSource.getRepository(HistoryEntryEntity);
+  for (const demo of DEMO_HISTORY) {
+    const exists = await historyRepo.findOne({
+      where: { year: demo.year, title: demo.title },
+    });
+    if (!exists) {
+      await historyRepo.save(
+        historyRepo.create({ ...demo, isPublished: true }),
+      );
+      console.log('Created demo history:', demo.year);
+    }
+  }
+
+  const leadershipRepo = dataSource.getRepository(LeadershipMemberEntity);
+  for (const demo of DEMO_LEADERSHIP) {
+    const exists = await leadershipRepo.findOne({ where: { name: demo.name } });
+    if (!exists) {
+      await leadershipRepo.save(
+        leadershipRepo.create({
+          ...demo,
+          socialLinks: [],
+          isPublished: true,
+        }),
+      );
+      console.log('Created demo leadership:', demo.name);
+    }
+  }
+
+  const teamRepo = dataSource.getRepository(TeamMemberEntity);
+  for (const demo of DEMO_TEAM) {
+    const exists = await teamRepo.findOne({ where: { name: demo.name } });
+    if (!exists) {
+      await teamRepo.save(
+        teamRepo.create({
+          ...demo,
+          socialLinks: [],
+          isPublished: true,
+        }),
+      );
+      console.log('Created demo team member:', demo.name);
     }
   }
 
@@ -236,33 +305,7 @@ async function runSeed(): Promise<void> {
           publishedAt: demo.isPublished ? new Date() : null,
         }),
       );
-      console.log('Created demo blog post:', demo.slug);
-    }
-  }
-
-  const pricingPlanRepo = dataSource.getRepository(PricingPlanEntity);
-  for (const demo of DEMO_PRICING_PLANS) {
-    const exists = await pricingPlanRepo.findOne({
-      where: { slug: demo.slug },
-    });
-    if (!exists) {
-      await pricingPlanRepo.save(pricingPlanRepo.create({ ...demo }));
-      console.log('Created demo pricing plan:', demo.slug);
-    }
-  }
-
-  const pricingFeatureRowRepo = dataSource.getRepository(
-    PricingFeatureRowEntity,
-  );
-  for (const demo of DEMO_PRICING_FEATURE_ROWS) {
-    const exists = await pricingFeatureRowRepo.findOne({
-      where: { productName: demo.productName },
-    });
-    if (!exists) {
-      await pricingFeatureRowRepo.save(
-        pricingFeatureRowRepo.create({ ...demo }),
-      );
-      console.log('Created demo pricing feature row:', demo.productName);
+      console.log('Created demo news post:', demo.slug);
     }
   }
 

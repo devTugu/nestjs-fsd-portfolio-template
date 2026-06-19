@@ -7,4 +7,5 @@ export interface ContactNotificationPayload {
 
 export interface INotificationPort {
   sendContactNotification(payload: ContactNotificationPayload): Promise<void>;
+  sendContactAutoReply(payload: ContactNotificationPayload): Promise<void>;
 }

@@ -98,7 +98,7 @@ describe('Auth and RBAC (e2e)', () => {
   });
 });
 
-describe('Portfolio API (e2e)', () => {
+describe('Public CMS API (e2e)', () => {
   let app: INestApplication<App>;
   let accessToken: string;
 
@@ -118,16 +118,12 @@ describe('Portfolio API (e2e)', () => {
     await app.close();
   });
 
-  it('GET /api/v1/projects returns 200 without token', () => {
-    return request(app.getHttpServer()).get('/api/v1/projects').expect(200);
+  it('GET /api/v1/brands returns 200 without token', () => {
+    return request(app.getHttpServer()).get('/api/v1/brands').expect(200);
   });
 
-  it('GET /api/v1/skills returns 200 without token', () => {
-    return request(app.getHttpServer()).get('/api/v1/skills').expect(200);
-  });
-
-  it('GET /api/v1/experiences returns 200 without token', () => {
-    return request(app.getHttpServer()).get('/api/v1/experiences').expect(200);
+  it('GET /api/v1/history returns 200 without token', () => {
+    return request(app.getHttpServer()).get('/api/v1/history').expect(200);
   });
 
   it('GET /api/v1/site-settings returns 200 without token', () => {
@@ -136,12 +132,8 @@ describe('Portfolio API (e2e)', () => {
       .expect(200);
   });
 
-  it('GET /api/v1/blog-posts returns 200 without token', () => {
-    return request(app.getHttpServer()).get('/api/v1/blog-posts').expect(200);
-  });
-
-  it('GET /api/v1/pricing returns 200 without token', () => {
-    return request(app.getHttpServer()).get('/api/v1/pricing').expect(200);
+  it('GET /api/v1/news returns 200 without token', () => {
+    return request(app.getHttpServer()).get('/api/v1/news').expect(200);
   });
 
   it('GET /api/v1/navigation returns 200 without token', () => {
@@ -173,24 +165,25 @@ describe('Portfolio API (e2e)', () => {
       .expect(400);
   });
 
-  it('POST /api/v1/admin/projects creates project for admin', async () => {
+  it('POST /api/v1/admin/brands creates brand for admin', async () => {
     const response = await request(app.getHttpServer())
-      .post('/api/v1/admin/projects')
+      .post('/api/v1/admin/brands')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        title: { en: 'E2E Test Project', mn: 'E2E Test Project' },
-        shortDescription: { en: 'Short desc', mn: 'Short desc' },
+        name: { en: 'E2E Test Brand', mn: 'E2E Test Brand' },
+        slug: 'e2e-test-brand',
+        type: 'RESTAURANT',
         description: {
-          en: 'Long description for e2e',
-          mn: 'Long description for e2e',
+          en: 'E2E brand description',
+          mn: 'E2E brand description',
         },
-        techStack: ['NestJS'],
         isPublished: false,
+        sortOrder: 99,
       })
       .expect(201);
 
     const body = response.body.data ?? response.body;
-    expect(body.slug).toBeDefined();
+    expect(body.slug).toBe('e2e-test-brand');
   });
 
   it('POST /api/v1/admin/blog-posts creates blog post for admin', async () => {
@@ -215,15 +208,13 @@ describe('Portfolio API (e2e)', () => {
     expect(body.slug).toBeDefined();
   });
 
-  it('GET /api/v1/admin/projects returns 401 without token', () => {
-    return request(app.getHttpServer())
-      .get('/api/v1/admin/projects')
-      .expect(401);
+  it('GET /api/v1/admin/brands returns 401 without token', () => {
+    return request(app.getHttpServer()).get('/api/v1/admin/brands').expect(401);
   });
 
-  it('GET unpublished project by slug returns 404', () => {
+  it('GET unpublished brand by slug returns 404', () => {
     return request(app.getHttpServer())
-      .get('/api/v1/projects/e2e-test-project')
+      .get('/api/v1/brands/e2e-test-brand')
       .expect(404);
   });
 });

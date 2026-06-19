@@ -21,6 +21,12 @@ function defaultSettingsOutput(): SiteSettingsOutput {
       keywords: { ...DEFAULT_SITE_SETTINGS.seo.keywords },
     },
     contactInfo: { ...DEFAULT_SITE_SETTINGS.contactInfo },
+    theme: { ...DEFAULT_SITE_SETTINGS.theme },
+    about: {
+      ...DEFAULT_SITE_SETTINGS.about,
+      values: [...DEFAULT_SITE_SETTINGS.about.values],
+      stats: [...DEFAULT_SITE_SETTINGS.about.stats],
+    },
     updatedAt: new Date().toISOString(),
   };
 }
@@ -70,6 +76,8 @@ export class UpdateSiteSettingsUseCase {
     footer?: Partial<SiteSettingsOutput['footer']>;
     seo?: Partial<SiteSettingsOutput['seo']>;
     contactInfo?: Partial<SiteSettingsOutput['contactInfo']>;
+    theme?: Partial<SiteSettingsOutput['theme']>;
+    about?: Partial<SiteSettingsOutput['about']>;
   }): Promise<SiteSettingsOutput> {
     const settings = await this.siteSettings.upsert(input);
     return toSiteSettingsOutput(settings);

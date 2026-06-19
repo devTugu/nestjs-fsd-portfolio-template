@@ -6,7 +6,7 @@ import {
 const L = localizedText;
 
 export function resolveSeedBrandName(): string {
-  return process.env.SEED_BRAND_NAME?.trim() || 'Portfolio';
+  return process.env.SEED_BRAND_NAME?.trim() || 'Mongolia Food Group';
 }
 
 export function resolveSeedContactEmail(): string {
@@ -19,14 +19,19 @@ export function buildDemoSiteSettings() {
   return {
     id: 1,
     hero: {
-      title: L('Hi, I am a Developer', 'Сайн байна уу, би хөгжүүлэгч'),
-      subtitle: L('Full Stack Engineer', 'Full Stack инженер'),
-      description: L(
-        'Building modern web applications with clean architecture.',
-        'Clean architecture-тай орчин үеийн веб аппликейшн хөгжүүлж байна.',
+      title: L(`Welcome to ${brandName}`, `${brandName}-д тавтай морил`),
+      subtitle: L(
+        'Restaurant & Event Brands',
+        'Ресторан & Арга хэмжээний брэнд',
       ),
-      ctaLabel: L('View Projects', 'Төслүүд үзэх'),
-      ctaUrl: '/projects',
+      description: L(
+        'Discover our collection of restaurants and event venues.',
+        'Манай ресторан болон арга хэмжээний танхимуудыг танилцуулъя.',
+      ),
+      ctaLabel: L('Explore Brands', 'Брэндүүд үзэх'),
+      ctaUrl: '/brands',
+      secondaryCtaLabel: L('Contact Us', 'Холбоо барих'),
+      secondaryCtaUrl: '/contact',
       imageUrl: null,
     },
     header: {
@@ -39,34 +44,66 @@ export function buildDemoSiteSettings() {
     footer: {
       copyright: L(`© 2026 ${brandName}`, `© 2026 ${brandName}`),
       tagline: L(
-        'Built with NestJS & Next.js',
-        'NestJS & Next.js-ээр бүтээгдсэн',
+        'Quality brands, memorable experiences.',
+        'Чанартай брэнд, мартагдашгүй туршлага.',
       ),
       socialLinks: [
-        { platform: 'github', url: 'https://github.com/example' },
-        { platform: 'linkedin', url: 'https://linkedin.com/in/example' },
+        { platform: 'facebook', url: 'https://facebook.com/example' },
+        { platform: 'instagram', url: 'https://instagram.com/example' },
       ],
     },
     seo: {
       title: L(
-        `${brandName} | Full Stack Developer`,
-        `${brandName} | Full Stack хөгжүүлэгч`,
+        `${brandName} | Multi-Brand Group`,
+        `${brandName} | Олон брэндийн групп`,
       ),
       description: L(
-        'Personal portfolio showcasing projects and experience.',
-        'Төсөл болон туршлагаа харуулсан хувийн портфолио.',
+        'Restaurants and event venues under one roof.',
+        'Нэг дээвэр дорх ресторан болон арга хэмжээний танхимууд.',
       ),
       ogImageUrl: null,
       keywords: localizedStringList(
-        ['portfolio', 'developer', 'full stack'],
-        ['портфолио', 'хөгжүүлэгч', 'full stack'],
+        ['restaurant', 'events', 'brands'],
+        ['ресторан', 'арга хэмжээ', 'брэнд'],
       ),
     },
     contactInfo: {
       email: resolveSeedContactEmail(),
-      phone: null,
-      location: L('Remote', 'Алсын'),
+      phone: '+976 9911 2233',
+      location: L('Ulaanbaatar, Mongolia', 'Улаанбаатар, Монгол'),
+      address: L(
+        'Sukhbaatar District, Peace Avenue 17',
+        'Сүхбаатар дүүрэг, Энхтайваны өргөн чөлөө 17',
+      ),
+      workHours: L('Mon–Sun 10:00–22:00', 'Да–Ня 10:00–22:00'),
       showForm: true,
+    },
+    theme: {
+      brandColor: '#635bff',
+    },
+    about: {
+      brief: L(
+        'We operate leading restaurant and event brands across Mongolia.',
+        'Бид Монголд тэргүүлэгч ресторан болон арга хэмжээний брэндүүдийг удирдана.',
+      ),
+      mission: L(
+        'Deliver exceptional dining and event experiences.',
+        'Онцгой хоол, уух зүйл болон арга хэмжээний туршлага өгнө.',
+      ),
+      vision: L(
+        'Become the most trusted multi-brand hospitality group.',
+        'Хамгийн найдвартай олон брэндийн зочлох үйлчилгээний групп болно.',
+      ),
+      values: [
+        { icon: 'heart', label: L('Quality', 'Чанар') },
+        { icon: 'users', label: L('Hospitality', 'Зочломтгой байдал') },
+        { icon: 'sparkles', label: L('Innovation', 'Шинэлэг байдал') },
+      ],
+      stats: [
+        { label: L('Years', 'Жил'), value: '12+' },
+        { label: L('Brands', 'Брэнд'), value: '4' },
+        { label: L('Guests yearly', 'Жилийн зочид'), value: '50K+' },
+      ],
     },
   };
 }

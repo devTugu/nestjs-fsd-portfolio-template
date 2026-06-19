@@ -37,7 +37,7 @@ describe('brand-seed.util', () => {
   it('falls back to defaults when env is unset', () => {
     delete process.env.SEED_BRAND_NAME;
     delete process.env.SEED_CONTACT_EMAIL;
-    expect(resolveSeedBrandName()).toBe('Portfolio');
+    expect(resolveSeedBrandName()).toBe('Mongolia Food Group');
     expect(resolveSeedContactEmail()).toBe('hello@example.com');
   });
 });
