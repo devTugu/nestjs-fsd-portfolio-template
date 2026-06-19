@@ -60,7 +60,7 @@ jobs:
           exit-code: '1'
 
       - name: Setup Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@v5
 
       - name: Helm lint and template
         run: |
