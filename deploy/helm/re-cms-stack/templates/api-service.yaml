@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "re-cms-stack.fullname" . }}-api
+spec:
+  selector:
+    app.kubernetes.io/name: re-cms-api
+  ports:
+    - port: {{ .Values.api.port }}
+      targetPort: {{ .Values.api.port }}

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: re-cms-stack
+description: Multi-brand RE CMS API + Admin (NestJS + Next.js)
+type: application
+version: 2.0.0
+appVersion: "2.0.0"
