@@ -73,7 +73,7 @@
     "class-validator": "^0.14.3",
     "compression": "^1.8.1",
     "dotenv": "^16.4.5",
-    "helmet": "^8.1.0",
+    "helmet": "^8.2.0",
     "ioredis": "^5.11.0",
     "joi": "^18.0.2",
     "mysql2": "^3.17.5",
