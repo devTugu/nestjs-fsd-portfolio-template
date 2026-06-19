@@ -1,0 +1,36 @@
+flowchart TB
+  subgraph actors [People]
+    Visitor[Public visitor]
+    Admin[Admin / Content manager]
+    Operator[Operator / DevOps]
+  end
+
+  subgraph external [External systems]
+    IdP[OIDC IdP\nKeycloak / Auth0]
+    SMTP[SMTP]
+    S3[S3-compatible storage]
+    OTEL[OTEL collector]
+    Sentry[Sentry]
+  end
+
+  subgraph platform [Portfolio platform]
+    WebApp["Next.js App\n(marketing + admin + BFF)"]
+    API["NestJS CMS API\n/api/v1"]
+    MySQL[(MySQL 8)]
+    Redis[(Redis 7)]
+  end
+
+  Visitor --> WebApp
+  Admin --> WebApp
+  Operator --> WebApp
+  Operator --> API
+  WebApp -->|"API_INTERNAL_URL\n(private network)"| API
+  WebApp --> IdP
+  API --> MySQL
+  API --> Redis
+  API --> SMTP
+  API --> S3
+  WebApp --> OTEL
+  API --> OTEL
+  WebApp --> Sentry
+  API --> Sentry

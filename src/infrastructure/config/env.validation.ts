@@ -59,7 +59,11 @@ export const envValidationSchema = Joi.object({
     otherwise: Joi.string().uri().optional(),
   }),
 
+  APP_DISPLAY_NAME: Joi.string().default('Portfolio Platform'),
   MFA_ISSUER: Joi.string().default('Portfolio Admin'),
+  CONTACT_EMAIL_SUBJECT_PREFIX: Joi.string().default('[Portfolio Contact]'),
+  SEED_BRAND_NAME: Joi.string().default('Portfolio'),
+  SEED_CONTACT_EMAIL: Joi.string().email().default('hello@example.com'),
   MFA_ENCRYPTION_KEY: Joi.string().min(32).optional(),
   MFA_REQUIRED_ROLES: Joi.string().default('SUPER_ADMIN'),
 

@@ -22,6 +22,11 @@ Copy [`.env.example`](../.env.example) to `.env` and set:
 | `CORS_ORIGIN` | Your Next.js frontend origin (BFF proxy; direct browser calls are uncommon) |
 | `LOG_LEVEL` | `info` or `warn` in production |
 | `LOGIN_THROTTLE_*` / `CONTACT_THROTTLE_*` | Tune auth/contact rate limits |
+| `APP_DISPLAY_NAME` | Swagger title + email subject branding |
+| `MFA_ISSUER` | Authenticator app label |
+| `SEED_BRAND_NAME` / `SEED_CONTACT_EMAIL` | Default CMS brand on first seed |
+
+See [WHITE-LABEL.md](./WHITE-LABEL.md) for the full branding checklist.
 
 ## Docker Compose
 

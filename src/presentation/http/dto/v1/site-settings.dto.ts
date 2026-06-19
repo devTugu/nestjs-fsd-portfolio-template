@@ -66,6 +66,21 @@ class HeaderSectionDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsString()
+  logoDarkUrl?: string | null;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  adminLogoUrl?: string | null;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  faviconUrl?: string | null;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @ValidateNested()
   @Type(() => LocalizedTextDto)
   siteName?: LocalizedTextDto;

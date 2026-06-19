@@ -1,0 +1,34 @@
+flowchart LR
+  subgraph railway [Railway]
+    RWeb[Frontend service]
+    RApi[API service]
+    RMySQL[(MySQL plugin)]
+    RRedis[(Redis plugin)]
+  end
+
+  subgraph k8s [Kubernetes / Helm]
+    Ing[Ingress]
+    FEPod[frontend pods]
+    APIPod[api pods]
+    KMySQL[(MySQL)]
+    KRedis[(Redis)]
+  end
+
+  subgraph vercel [Vercel + hosted API]
+    VWeb[Vercel Next.js]
+    VApi[Hosted NestJS API]
+  end
+
+  User1[Users] --> RWeb
+  RWeb --> RApi
+  RApi --> RMySQL
+  RApi --> RRedis
+
+  User2[Users] --> Ing
+  Ing --> FEPod
+  Ing --> APIPod
+  APIPod --> KMySQL
+  APIPod --> KRedis
+
+  User3[Users] --> VWeb
+  VWeb --> VApi

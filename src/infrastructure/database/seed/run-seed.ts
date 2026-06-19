@@ -28,9 +28,9 @@ import {
 import {
   DEMO_EXPERIENCES,
   DEMO_PROJECTS,
-  DEMO_SITE_SETTINGS,
   DEMO_SKILLS,
 } from './portfolio-seed.const';
+import { buildDemoSiteSettings } from './brand-seed.util';
 import {
   DEMO_BLOG_POSTS,
   DEMO_PRICING_PLANS,
@@ -220,7 +220,9 @@ async function runSeed(): Promise<void> {
   const siteSettingsRepo = dataSource.getRepository(SiteSettingEntity);
   const existingSettings = await siteSettingsRepo.findOne({ where: { id: 1 } });
   if (!existingSettings) {
-    await siteSettingsRepo.save(siteSettingsRepo.create(DEMO_SITE_SETTINGS));
+    await siteSettingsRepo.save(
+      siteSettingsRepo.create(buildDemoSiteSettings()),
+    );
     console.log('Created default site settings');
   }
 

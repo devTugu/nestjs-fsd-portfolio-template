@@ -33,12 +33,16 @@ export class NodemailerNotificationAdapter implements INotificationPort {
         },
       });
 
+      const subjectPrefix = this.config.get<string>(
+        'CONTACT_EMAIL_SUBJECT_PREFIX',
+        '[Portfolio Contact]',
+      );
       await transporter.sendMail({
         from,
         to: notifyEmail,
         subject: payload.subject
-          ? `[Portfolio Contact] ${payload.subject}`
-          : '[Portfolio Contact] New message',
+          ? `${subjectPrefix} ${payload.subject}`
+          : `${subjectPrefix} New message`,
         text: `From: ${payload.name} <${payload.email}>\n\n${payload.message}`,
       });
     } catch (error) {

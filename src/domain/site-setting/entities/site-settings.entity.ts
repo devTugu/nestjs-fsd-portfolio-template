@@ -21,6 +21,9 @@ export interface SiteSettingsHero {
 
 export interface SiteSettingsHeader {
   logoUrl: string | null;
+  logoDarkUrl: string | null;
+  adminLogoUrl: string | null;
+  faviconUrl: string | null;
   siteName: LocalizedText;
 }
 
@@ -74,10 +77,13 @@ export const DEFAULT_SITE_SETTINGS = {
   },
   header: {
     logoUrl: null,
-    siteName: localizedText('Portfolio', 'Портфолио'),
+    logoDarkUrl: null,
+    adminLogoUrl: null,
+    faviconUrl: null,
+    siteName: localizedText('Your Site', 'Таны сайт'),
   },
   footer: {
-    copyright: localizedText('© 2026 Portfolio', '© 2026 Портфолио'),
+    copyright: localizedText('© 2026 Your Site', '© 2026 Таны сайт'),
     tagline: localizedText(
       'Built with NestJS & Next.js',
       'NestJS & Next.js-ээр бүтээгдсэн',
@@ -85,10 +91,10 @@ export const DEFAULT_SITE_SETTINGS = {
     socialLinks: [],
   },
   seo: {
-    title: localizedText('Portfolio', 'Портфолио'),
+    title: localizedText('Your Site', 'Таны сайт'),
     description: localizedText(
-      'Personal portfolio website',
-      'Хувийн портфолио веб сайт',
+      'Enterprise portfolio and CMS platform',
+      'Enterprise портфолио болон CMS платформ',
     ),
     ogImageUrl: null,
     keywords: localizedStringList(

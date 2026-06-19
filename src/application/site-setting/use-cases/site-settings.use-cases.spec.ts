@@ -19,7 +19,13 @@ describe('Site settings use cases', () => {
       ctaUrl: '/',
       imageUrl: null,
     },
-    header: { logoUrl: null, siteName: localizedText('P', 'П') },
+    header: {
+      logoUrl: null,
+      logoDarkUrl: null,
+      adminLogoUrl: null,
+      faviconUrl: null,
+      siteName: localizedText('P', 'П'),
+    },
     footer: {
       copyright: localizedText('C', 'C'),
       tagline: localizedText('T', 'T'),

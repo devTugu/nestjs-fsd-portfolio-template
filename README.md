@@ -299,6 +299,9 @@ Pair with [nextjs-fsd-portfolio-template](https://github.com/devTugu/nextjs-fsd-
 | Doc | Purpose | Keep? |
 |-----|---------|-------|
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Layer/module overview | Yes |
+| [SYSTEM-ARCHITECTURE.md](docs/SYSTEM-ARCHITECTURE.md) | C4 diagrams + CTO system view | Yes |
+| [WHITE-LABEL.md](docs/WHITE-LABEL.md) | Brand/env/CMS configuration | Yes |
+| [pitch/ARCHITECTURE-PITCH.md](docs/pitch/ARCHITECTURE-PITCH.md) | Marp slide deck (PDF export) | Yes |
 | [API.md](docs/API.md) | Endpoint reference | Yes |
 | [PRODUCTION.md](docs/PRODUCTION.md) | Local + Docker + Railway | Yes |
 | [RAILWAY.md](docs/RAILWAY.md) | Railway full-stack runbook | Yes |

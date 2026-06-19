@@ -46,7 +46,8 @@
     "migration:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d data-source.ts",
     "migration:run:prod": "node dist/infrastructure/database/run-migrations.js",
     "seed": "ts-node -r tsconfig-paths/register src/infrastructure/database/seed/run-seed.ts",
-    "seed:prod": "node dist/infrastructure/database/seed/run-seed.js"
+    "seed:prod": "node dist/infrastructure/database/seed/run-seed.js",
+    "docs:pitch-pdf": "marp docs/pitch/ARCHITECTURE-PITCH.md -o docs/pitch/ARCHITECTURE-PITCH.pdf --allow-local-files --no-stdin"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1068.0",
@@ -93,6 +94,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
+    "@marp-team/marp-cli": "^4.4.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",

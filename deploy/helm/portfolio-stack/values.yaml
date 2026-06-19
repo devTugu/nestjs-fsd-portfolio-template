@@ -1,6 +1,16 @@
 global:
   imagePullPolicy: IfNotPresent
 
+brand:
+  appDisplayName: Portfolio Platform
+  mfaIssuer: Portfolio Admin
+  contactEmailSubjectPrefix: "[Portfolio Contact]"
+  seedBrandName: Portfolio
+  seedContactEmail: hello@example.com
+  nextPublicAppName: Portfolio Admin
+  nextPublicBrandName: Portfolio
+  nextPublicSiteUrl: https://portfolio.example.com
+
 api:
   enabled: true
   replicaCount: 2
