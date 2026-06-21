@@ -220,6 +220,11 @@ class AboutSectionDto {
   @Type(() => LocalizedTextDto)
   vision?: LocalizedTextDto;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  imageUrl?: string | null;
+
   @ApiPropertyOptional({ type: [AboutValueDto] })
   @IsOptional()
   @IsArray()

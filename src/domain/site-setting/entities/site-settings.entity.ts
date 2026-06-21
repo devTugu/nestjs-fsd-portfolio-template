@@ -69,6 +69,7 @@ export interface SiteSettingsAbout {
   brief: LocalizedText;
   mission: LocalizedText;
   vision: LocalizedText;
+  imageUrl: string | null;
   values: AboutValue[];
   stats: AboutStat[];
 }
@@ -156,6 +157,7 @@ export const DEFAULT_SITE_SETTINGS = {
       'Become the leading multi-brand group in our region.',
       'Манай бүсийн тэргүүлэгч олон брэндийн групп болно.',
     ),
+    imageUrl: null,
     values: [
       {
         icon: 'heart',

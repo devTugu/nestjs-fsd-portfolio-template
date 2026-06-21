@@ -43,6 +43,15 @@ describe('Site settings use cases', () => {
       location: null,
       showForm: true,
     },
+    theme: { brandColor: null },
+    about: {
+      brief: localizedText('About', 'Тухай'),
+      mission: localizedText('Mission', 'Эрхэм зорилго'),
+      vision: localizedText('Vision', 'Алсын хараа'),
+      imageUrl: null,
+      values: [],
+      stats: [],
+    },
     updatedAt: new Date(),
   };
 
@@ -74,5 +83,19 @@ describe('Site settings use cases', () => {
       hero: { title: localizedText('Updated', 'Шинэчлэгдсэн') },
     });
     expect(result.hero.title.en).toBe('Updated');
+  });
+
+  it('updates about image url', async () => {
+    repo.upsert.mockResolvedValue({
+      ...settings,
+      about: {
+        ...settings.about,
+        imageUrl: 'https://cdn.example.com/about.jpg',
+      },
+    });
+    const result = await new UpdateSiteSettingsUseCase(repo).execute({
+      about: { imageUrl: 'https://cdn.example.com/about.jpg' },
+    });
+    expect(result.about.imageUrl).toBe('https://cdn.example.com/about.jpg');
   });
 });

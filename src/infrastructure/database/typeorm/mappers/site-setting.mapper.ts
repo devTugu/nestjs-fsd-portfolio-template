@@ -50,6 +50,7 @@ function normalizeAbout(about: SiteSettingsAbout): SiteSettingsAbout {
     brief: about?.brief ?? DEFAULT_SITE_SETTINGS.about.brief,
     mission: about?.mission ?? DEFAULT_SITE_SETTINGS.about.mission,
     vision: about?.vision ?? DEFAULT_SITE_SETTINGS.about.vision,
+    imageUrl: about?.imageUrl ?? null,
     values: about?.values ?? [],
     stats: about?.stats ?? [],
   };
